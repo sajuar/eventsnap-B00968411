@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EventSnap – Cloud Media Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --purple: #7C3AED;
+      --purple-light: #A78BFA;
+      --purple-dark: #5B21B6;
+      --purple-bg: #EDE9FE;
+      --blue: #2563EB;
+      --green: #16A34A;
+      --red: #DC2626;
+      --orange: #D97706;
+      --bg: #F5F3FF;
+      --surface: #FFFFFF;
+      --surface2: #F8F7FF;
+      --border: #E5E1FA;
+      --text: #1E1B4B;
+      --text-muted: #6B7280;
+      --text-light: #9CA3AF;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 4px 24px rgba(124,58,237,0.08);
+      --shadow-lg: 0 8px 40px rgba(124,58,237,0.15);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(124,58,237,0.06);
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.25rem;
+      color: var(--purple);
+    }
+    .nav-brand svg { width: 36px; height: 36px; }
+    .nav-tabs {
+      display: flex; gap: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 4px;
+    }
+    .nav-tab {
+      padding: 7px 18px; border-radius: 7px; border: none;
+      background: transparent; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
+      color: var(--text-muted); transition: all 0.2s;
+    }
+    .nav-tab.active {
+      background: var(--purple); color: #fff;
+      box-shadow: 0 2px 8px rgba(124,58,237,0.3);
+    }
+    .nav-tab:hover:not(.active) { background: var(--purple-bg); color: var(--purple); }
+
+    /* ─── PAGES ─── */
+    .page { display: none; padding: 2rem; max-width: 900px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    .page-header h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.75rem; font-weight: 700;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* ─── CARD ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+    }
+    .card + .card { margin-top: 1.25rem; }
+    .card-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      color: var(--text); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title-icon {
+      width: 28px; height: 28px; border-radius: 7px;
+      background: var(--purple-bg); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    /* ─── FORM ELEMENTS ─── */
+    label {
+      display: block; font-size: 0.85rem; font-weight: 500;
+      color: var(--text); margin-bottom: 6px;
+    }
+    input[type="text"], input[type="date"], textarea, select {
+      width: 100%; padding: 10px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      color: var(--text); background: var(--surface);
+      outline: none; transition: border 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      padding: 10px 20px; border: none; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.18s; display: inline-flex;
+      align-items: center; gap: 7px;
+    }
+    .btn-primary { background: var(--purple); color: #fff; }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(124,58,237,0.35); }
+    .btn-success { background: var(--green); color: #fff; }
+    .btn-success:hover { background: #15803D; transform: translateY(-1px); }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-danger:hover { background: #B91C1C; }
+    .btn-ghost { background: transparent; color: var(--purple); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { background: var(--purple-bg); border-color: var(--purple-light); }
+    .btn-sm { padding: 6px 13px; font-size: 0.8rem; }
+    .btn-full { width: 100%; justify-content: center; padding: 12px; }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important; }
+
+    /* ─── DROP ZONE ─── */
+    .dropzone {
+      border: 2px dashed var(--purple-light);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      padding: 2.5rem 1rem;
+      text-align: center; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 1rem;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--purple); background: var(--purple-bg);
+    }
+    .dropzone-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .dropzone p { color: var(--text-muted); font-size: 0.9rem; }
+    .dropzone strong { color: var(--purple); }
+    #file-input { display: none; }
+    .file-preview {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--purple-bg); border-radius: var(--radius-sm);
+      padding: 10px 14px; margin-bottom: 1rem;
+      font-size: 0.85rem; color: var(--purple-dark);
+    }
+
+    /* ─── MEDIA GRID ─── */
+    .media-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.25rem; margin-top: 1.5rem;
+    }
+    .media-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .media-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
+    .media-thumb {
+      width: 100%; height: 170px; object-fit: cover;
+      background: var(--purple-bg); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 3rem; color: var(--purple-light);
+    }
+    .media-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .media-body { padding: 1rem; }
+    .media-title {
+      font-weight: 600; font-size: 0.9rem;
+      color: var(--text); margin-bottom: 4px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .media-meta { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+    .media-actions { display: flex; gap: 6px; }
+    .badge {
+      display: inline-block; padding: 2px 9px;
+      border-radius: 99px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-purple { background: var(--purple-bg); color: var(--purple); }
+    .badge-green { background: #DCFCE7; color: #166534; }
+
+    /* ─── ALERTS ─── */
+    .alert {
+      padding: 12px 16px; border-radius: var(--radius-sm);
+      font-size: 0.88rem; font-weight: 500; margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+    .alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
+    .alert-info { background: var(--purple-bg); color: var(--purple-dark); border: 1px solid #C4B5FD; }
+    .alert { display: none; }
+    .alert.show { display: flex; }
+
+    /* ─── MODAL ─── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(30,27,75,0.45); z-index: 200;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface); border-radius: var(--radius);
+      padding: 2rem; width: 90%; max-width: 480px;
+      box-shadow: var(--shadow-lg); position: relative;
+    }
+    .modal-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none; cursor: pointer;
+      font-size: 1.25rem; color: var(--text-muted);
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-footer { margin-top: 1.25rem; display: flex; gap: 10px; justify-content: flex-end; }
+
+    /* ─── SPINNER ─── */
+    .spinner {
+      width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading .spinner { display: inline-block; }
+    .loading .btn-text { display: none; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty {
+      text-align: center; padding: 3.5rem 1rem;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .empty h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .empty p { font-size: 0.875rem; }
+
+    /* ─── CONFIG BANNER ─── */
+    .config-banner {
+      background: #FEF3C7; border: 1px solid #FDE68A;
+      border-radius: var(--radius-sm); padding: 10px 16px;
+      font-size: 0.82rem; color: #92400E; margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ─── SEARCH BAR ─── */
+    .search-row {
+      display: flex; gap: 10px; margin-bottom: 1.5rem;
+    }
+    .search-row input { flex: 1; }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .nav-tabs { display: none; }
+      .mobile-menu { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-brand">
+    <!-- EventSnap SVG Logo (inline recreation) -->
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="16" fill="#EDE9FE"/>
+      <!-- camera icon center -->
+      <circle cx="18" cy="18" r="4.5" fill="#7C3AED"/>
+      <!-- rays -->
+      <line x1="18" y1="4" x2="18" y2="9" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18" y1="27" x2="18" y2="32" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="4" y1="18" x2="9" y2="18" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="27" y1="18" x2="32" y2="18" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="8.1" y1="8.1" x2="11.6" y2="11.6" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="24.4" y1="24.4" x2="27.9" y2="27.9" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="27.9" y1="8.1" x2="24.4" y2="11.6" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <line x1="11.6" y1="24.4" x2="8.1" y2="27.9" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+      <!-- corner brackets -->
+      <path d="M3 3h4M3 3v4" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M33 3h-4M33 3v4" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M3 33h4M3 33v-4" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M33 33h-4M33 33v-4" stroke="#7C3AED" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    EventSnap
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('upload')">📤 Upload</button>
+    <button class="nav-tab" onclick="showPage('gallery')">🖼️ Gallery</button>
+    <button class="nav-tab" onclick="showPage('manage')">⚙️ Manage</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE 1 — UPLOAD
+══════════════════════════════════════ -->
+<div class="page active" id="page-upload">
+  <div class="page-header">
+    <h1>Upload Media</h1>
+    <p>Upload photos to an event and create a new one.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">📁</div> Select File</div>
+
+    <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+      <div class="dropzone-icon">☁️</div>
+      <p><strong>Drag &amp; Drop here</strong> or click to browse</p>
+      <p style="margin-top:4px;font-size:0.8rem;">Supports JPG, PNG, GIF, WebP</p>
+    </div>
+    <input type="file" id="file-input" accept="image/*"/>
+
+    <div class="file-preview" id="file-preview" style="display:none">
+      <span>📎</span>
+      <span id="file-name"></span>
+      <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="clearFile()">✕ Remove</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Event ID *</label>
+        <input type="text" id="up-eventId" placeholder="e.g. event-001"/>
+      </div>
+      <div class="form-group">
+        <label>Event Name *</label>
+        <input type="text" id="up-eventName" placeholder="e.g. Graduation 2026"/>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Photo Title *</label>
+        <input type="text" id="up-title" placeholder="e.g. Stage photo"/>
+      </div>
+      <div class="form-group">
+        <label>Uploader Name</label>
+        <input type="text" id="up-uploader" placeholder="Your name"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="up-desc" placeholder="Optional description..."></textarea>
+    </div>
+
+    <div class="alert alert-success" id="up-success">✅ Media uploaded and metadata saved successfully!</div>
+    <div class="alert alert-error" id="up-error" id="up-error"></div>
+
+    <button class="btn btn-primary btn-full" id="up-btn" onclick="handleUpload()">
+      <div class="spinner"></div>
+      <span class="btn-text">⬆️ Upload</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 2 — GALLERY
+══════════════════════════════════════ -->
+<div class="page" id="page-gallery">
+  <div class="page-header">
+    <h1>Media Gallery</h1>
+    <p>Browse all uploaded event media from Cosmos DB.</p>
+  </div>
+
+  <div class="search-row">
+    <input type="text" id="search-input" placeholder="🔍 Filter by event name or title..." oninput="filterGallery()"/>
+    <button class="btn btn-ghost" onclick="loadGallery()">🔄 Refresh</button>
+  </div>
+
+  <div class="alert alert-error" id="gallery-error"></div>
+  <div id="gallery-container">
+    <div class="empty">
+      <div class="empty-icon">🖼️</div>
+      <h3>No media loaded</h3>
+      <p>Click Refresh to load media from Azure.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE 3 — MANAGE (Update/Delete)
+══════════════════════════════════════ -->
+<div class="page" id="page-manage">
+  <div class="page-header">
+    <h1>Manage Media</h1>
+    <p>Search, update or delete existing media records.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-icon">🔍</div> Find Media by ID</div>
+    <div style="display:flex;gap:10px">
+      <input type="text" id="mg-id" placeholder="Media document ID (e.g. media-003)" style="flex:1"/>
+      <input type="text" id="mg-eventId" placeholder="Event ID (e.g. event-002)" style="flex:1"/>
+      <button class="btn btn-ghost" onclick="findMedia()">Search</button>
+    </div>
+    <div class="alert alert-error" id="mg-find-error" style="margin-top:1rem"></div>
+  </div>
+
+  <div class="card" id="mg-result-card" style="display:none">
+    <div class="card-title"><div class="card-title-icon">✏️</div> Edit Record</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Event Name</label>
+        <input type="text" id="mg-eventName"/>
+      </div>
+      <div class="form-group">
+        <label>Photo Title</label>
+        <input type="text" id="mg-title"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="mg-desc"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Uploader Name</label>
+      <input type="text" id="mg-uploader"/>
+    </div>
+
+    <div class="alert alert-success" id="mg-success"></div>
+    <div class="alert alert-error" id="mg-error"></div>
+
+    <div style="display:flex;gap:10px;margin-top:0.25rem">
+      <button class="btn btn-primary" id="mg-save-btn" onclick="handleUpdate()">
+        <div class="spinner"></div>
+        <span class="btn-text">💾 Save Changes</span>
+      </button>
+      <button class="btn btn-danger" id="mg-del-btn" onclick="confirmDelete()">
+        🗑️ Delete Media
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── DELETE CONFIRM MODAL ─── -->
+<div class="modal-overlay" id="del-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">🗑️ Confirm Delete</div>
+    <p style="color:var(--text-muted);font-size:0.9rem">
+      This will permanently delete the media record <strong id="del-label"></strong> and its file from Azure Blob Storage. This cannot be undone.
+    </p>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" id="del-confirm-btn" onclick="handleDelete()">
+        <div class="spinner"></div>
+        <span class="btn-text">Delete Permanently</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  ⚙️  CONFIG 
+// ═══════════════════════════════════════════════════════
+const CONFIG = {
+  // Azure Function App — SAS token generation
+  SAS_ENDPOINT: "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateUploadSas",
+
+  // Logic App — Create media metadata (POST)
+  CREATE_ENDPOINT: "https://prod-12.germanywestcentral.logic.azure.com/workflows/a08171ebcb424bf1b95619707326ac1c/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=bWB7j4dzLQPEwn-sZeiocBPU5-WZjAkFTriPt_l_fUQ",
+
+  // Logic App — Get all media (GET)
+  GETALL_ENDPOINT: "https://prod-14.germanywestcentral.logic.azure.com/workflows/97d543b0d8594ac7b15b7dfebc96cf9d/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=TrKQQLcc9Gloot_qNXsl1hwq1onCBMXpT7gBJ5S_KKI",
+
+  // Logic App — Update media (PUT)  {id} will be replaced
+  UPDATE_ENDPOINT: "https://prod-14.germanywestcentral.logic.azure.com/workflows/d196e6f939d3406388ee1200bf154730/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media/%7Bid%7D?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=Sr9QQE5FeQ1kZiBRhgzen-iUp1TWtwptLCeCFN1eyaE",
+
+  // Logic App — Delete media (DELETE) /rest/v1/media/{eventId}/{id}
+  DELETE_ENDPOINT: "https://prod-09.germanywestcentral.logic.azure.com/workflows/2cfc9cc8144e474fa2a05f6e5fd8fa1f/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media/%7BeventId%7D/%7Bid%7D?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=qeXOun5tVlYx_7dId7v31DXf-Phd_M2EIxy2iqI1W8M",
+
+  // Azure Function — Generate READ SAS for displaying private blobs
+  READ_SAS_ENDPOINT: "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateReadSas",
+};
+// ═══════════════════════════════════════════════════════
+
+// ─── State ───
+let selectedFile = null;
+let currentMediaId = null;
+let currentEventId = null;
+let allMedia = [];
+
+// ─── Navigation ───
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'gallery') loadGallery();
+}
+
+// ─── Drag & Drop ───
+const dz = document.getElementById('dropzone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('dragover');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) setFile(f);
+});
+document.getElementById('file-input').addEventListener('change', e => {
+  if (e.target.files[0]) setFile(e.target.files[0]);
+});
+function setFile(f) {
+  selectedFile = f;
+  document.getElementById('file-name').textContent = f.name + ' (' + (f.size / 1024).toFixed(1) + ' KB)';
+  document.getElementById('file-preview').style.display = 'flex';
+  document.getElementById('dropzone').style.display = 'none';
+}
+function clearFile() {
+  selectedFile = null;
+  document.getElementById('file-input').value = '';
+  document.getElementById('file-preview').style.display = 'none';
+  document.getElementById('dropzone').style.display = 'block';
+}
+
+// ─── UPLOAD FLOW ───
+async function handleUpload() {
+  const eventId = v('up-eventId'), eventName = v('up-eventName'),
+        title = v('up-title'), uploader = v('up-uploader'), desc = v('up-desc');
+
+  hideAlert('up-success'); hideAlert('up-error');
+  if (!selectedFile) return showErr('up-error', 'Please select a file first.');
+  if (!eventId || !eventName || !title) return showErr('up-error', 'Event ID, Event Name and Title are required.');
+
+  setLoading('up-btn', true);
+  try {
+    // Step 1: Get SAS token from Azure Function
+    const sasRes = await fetch(CONFIG.SAS_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fileName: selectedFile.name, eventId })
+    });
+    if (!sasRes.ok) throw new Error('SAS token request failed (' + sasRes.status + ')');
+    const { uploadUrl, blobUrl, fileName } = await sasRes.json();
+
+    // Step 2: Upload file directly to Blob Storage using SAS URL
+    const uploadRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'x-ms-blob-type': 'BlockBlob', 'Content-Type': selectedFile.type },
+      body: selectedFile
+    });
+    if (!uploadRes.ok) throw new Error('Blob upload failed (' + uploadRes.status + ')');
+
+    // Step 3: Save metadata to Cosmos DB via Logic App
+    const docId = 'media-' + Date.now();
+    const metaRes = await fetch(CONFIG.CREATE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: docId,
+        eventId, eventName, title,
+        description: desc,
+        uploaderName: uploader,
+        fileName: selectedFile.name,
+        blobUrl,
+        mediaType: 'image',
+        uploadDate: new Date().toISOString()
+      })
+    });
+    if (!metaRes.ok) throw new Error('Metadata save failed (' + metaRes.status + ')');
+
+    showAlert('up-success');
+    clearFile();
+    ['up-eventId','up-eventName','up-title','up-uploader','up-desc'].forEach(id => { document.getElementById(id).value = ''; });
+  } catch (err) {
+    showErr('up-error', '❌ ' + err.message);
+  }
+  setLoading('up-btn', false);
+}
+
+// ─── GALLERY ───
+async function loadGallery() {
+  const container = document.getElementById('gallery-container');
+  hideAlert('gallery-error');
+  container.innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:2rem;animation:spin 1s linear infinite;display:inline-block">⚙️</div><p style="margin-top:.5rem">Loading from Azure...</p></div>';
+
+  try {
+    const res = await fetch(CONFIG.GETALL_ENDPOINT, { method: 'GET' });
+    if (!res.ok) throw new Error('GET request failed (' + res.status + ')');
+    const data = await res.json();
+    // Handle both array and { value: [...] } response shapes
+    allMedia = Array.isArray(data) ? data : (data.value || data.Documents || []);
+    renderGallery(allMedia);
+  } catch (err) {
+    showErr('gallery-error', '❌ Could not load media: ' + err.message);
+    container.innerHTML = '<div class="empty"><div class="empty-icon">⚠️</div><h3>Load failed</h3><p>Check your endpoint URL in CONFIG.</p></div>';
+  }
+}
+
+function filterGallery() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const filtered = allMedia.filter(m =>
+    (m.eventName||'').toLowerCase().includes(q) ||
+    (m.title||'').toLowerCase().includes(q)
+  );
+  renderGallery(filtered);
+}
+
+function renderGallery(items) {
+  const container = document.getElementById('gallery-container');
+  if (!items.length) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><h3>No media found</h3><p>Upload some photos to get started.</p></div>';
+    return;
+  }
+  // Render cards with placeholder thumbs first, then load SAS images async
+  container.innerHTML = '<div class="media-grid" id="media-grid">' + items.map((m, i) => `
+    <div class="media-card" id="card-${i}">
+      <div class="media-thumb" id="thumb-${i}">
+        <span>📷</span>
+      </div>
+      <div class="media-body">
+        <div class="media-title">${esc(m.title || 'Untitled')}</div>
+        <div class="media-meta">
+          <span class="badge badge-purple">${esc(m.eventName || m.eventId)}</span>
+          &nbsp;${m.uploadDate ? new Date(m.uploadDate).toLocaleDateString() : ''}
+        </div>
+        <div class="media-meta">👤 ${esc(m.uploaderName || 'Unknown')}</div>
+        ${m.description ? `<div class="media-meta" style="font-style:italic">${esc(m.description)}</div>` : ''}
+        <div class="media-actions">
+          <button class="btn btn-ghost btn-sm" id="view-btn-${i}">🔗 View</button>
+          <button class="btn btn-ghost btn-sm" onclick="gotoManage('${esc(m.id)}','${esc(m.eventId)}')">✏️ Edit</button>
+        </div>
+      </div>
+    </div>
+  `).join('') + '</div>';
+
+  // Load images asynchronously using read SAS
+  items.forEach((m, i) => {
+    if (m.blobUrl && m.fileName && m.eventId) {
+      loadImageWithSas(m, i);
+    }
+  });
+}
+
+async function loadImageWithSas(m, i) {
+  // Extract just the filename from blobUrl as fallback
+  const fileName = m.fileName || m.blobUrl.split('/').pop();
+  const thumbEl = document.getElementById('thumb-' + i);
+  const viewBtn = document.getElementById('view-btn-' + i);
+
+  try {
+    let imageUrl;
+
+    if (CONFIG.READ_SAS_ENDPOINT) {
+      // Call GenerateReadSas function to get a time-limited read URL
+      const res = await fetch(CONFIG.READ_SAS_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: fileName, eventId: m.eventId })
+      });
+      if (!res.ok) throw new Error('SAS fetch failed');
+      const data = await res.json();
+      imageUrl = data.readUrl || data.url || data.sasUrl;
+    }
+
+    if (imageUrl && thumbEl) {
+      thumbEl.innerHTML = `<img src="${imageUrl}" alt="${esc(m.title || 'photo')}" onerror="this.parentElement.innerHTML='<span style=font-size:2.5rem>🖼️</span>'"/>`;
+      if (viewBtn) {
+        viewBtn.onclick = () => window.open(imageUrl, '_blank');
+      }
+    } else if (viewBtn) {
+      // No read SAS — link directly (will only work if blob is public)
+      viewBtn.onclick = () => window.open(m.blobUrl, '_blank');
+    }
+  } catch (e) {
+    // Silently fall back to placeholder — image stays as 📷
+    if (viewBtn) viewBtn.onclick = () => window.open(m.blobUrl, '_blank');
+  }
+}
+
+function gotoManage(id, eventId) {
+  document.getElementById('mg-id').value = id;
+  document.getElementById('mg-eventId').value = eventId;
+  // Switch to manage tab
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-manage').classList.add('active');
+  document.querySelectorAll('.nav-tab')[2].classList.add('active');
+  findMedia();
+}
+
+// ─── MANAGE — Find ───
+async function findMedia() {
+  const id = v('mg-id'), eventId = v('mg-eventId');
+  hideAlert('mg-find-error');
+  if (!id) return showErr('mg-find-error', 'Enter a media ID.');
+
+  // First try local cache
+  const cached = allMedia.find(m => m.id === id);
+  if (cached) { populateForm(cached); return; }
+
+  // Fallback: load all and search
+  try {
+    const res = await fetch(CONFIG.GETALL_ENDPOINT);
+    if (!res.ok) throw new Error('Fetch failed');
+    const data = await res.json();
+    const items = Array.isArray(data) ? data : (data.value || data.Documents || []);
+    const found = items.find(m => m.id === id);
+    if (!found) throw new Error('Media not found with ID: ' + id);
+    populateForm(found);
+  } catch(err) {
+    showErr('mg-find-error', '❌ ' + err.message);
+    document.getElementById('mg-result-card').style.display = 'none';
+  }
+}
+
+function populateForm(m) {
+  currentMediaId = m.id;
+  currentEventId = m.eventId;
+  document.getElementById('mg-eventName').value = m.eventName || '';
+  document.getElementById('mg-title').value = m.title || '';
+  document.getElementById('mg-desc').value = m.description || '';
+  document.getElementById('mg-uploader').value = m.uploaderName || '';
+  document.getElementById('mg-result-card').style.display = 'block';
+  document.getElementById('del-label').textContent = '"' + (m.title || m.id) + '"';
+  hideAlert('mg-success'); hideAlert('mg-error');
+}
+
+// ─── MANAGE — Update ───
+async function handleUpdate() {
+  if (!currentMediaId) return;
+  hideAlert('mg-success'); hideAlert('mg-error');
+  setLoading('mg-save-btn', true);
+  try {
+    const res = await fetch(CONFIG.UPDATE_ENDPOINT.replace('%7Bid%7D', currentMediaId).replace('{id}', currentMediaId), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: currentMediaId,
+        eventId: currentEventId,
+        eventName: v('mg-eventName'),
+        title: v('mg-title'),
+        description: v('mg-desc'),
+        uploaderName: v('mg-uploader'),
+      })
+    });
+    if (!res.ok) throw new Error('Update failed (' + res.status + ')');
+    showAlert('mg-success', '✅ Record updated successfully!');
+  } catch(err) {
+    showErr('mg-error', '❌ ' + err.message);
+  }
+  setLoading('mg-save-btn', false);
+}
+
+// ─── MANAGE — Delete ───
+function confirmDelete() {
+  document.getElementById('del-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('del-modal').classList.remove('open');
+}
+async function handleDelete() {
+  if (!currentMediaId || !currentEventId) return;
+  setLoading('del-confirm-btn', true);
+  try {
+    const url = CONFIG.DELETE_ENDPOINT
+      .replace('%7BeventId%7D', currentEventId).replace('{eventId}', currentEventId)
+      .replace('%7Bid%7D', currentMediaId).replace('{id}', currentMediaId);
+    const res = await fetch(url, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Delete failed (' + res.status + ')');
+    closeModal();
+    document.getElementById('mg-result-card').style.display = 'none';
+    document.getElementById('mg-id').value = '';
+    document.getElementById('mg-eventId').value = '';
+    showAlert('mg-success', '✅ Media deleted from Blob Storage and Cosmos DB.');
+    currentMediaId = null; currentEventId = null;
+  } catch(err) {
+    closeModal();
+    showErr('mg-error', '❌ ' + err.message);
+  }
+  setLoading('del-confirm-btn', false);
+}
+
+// ─── Helpers ───
+function v(id) { return document.getElementById(id).value.trim(); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  if (msg) el.textContent = msg;
+  el.classList.add('show');
+}
+function showErr(id, msg) { showAlert(id, msg); }
+function hideAlert(id) { document.getElementById(id).classList.remove('show'); }
+function setLoading(btnId, on) {
+  const btn = document.getElementById(btnId);
+  btn.classList.toggle('loading', on);
+  btn.disabled = on;
+}
+</script>
+</body>
+</html>
