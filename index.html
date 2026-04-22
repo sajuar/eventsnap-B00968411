@@ -415,7 +415,7 @@ const CONFIG = {
   UPDATE_ENDPOINT:   "https://prod-14.germanywestcentral.logic.azure.com/workflows/d196e6f939d3406388ee1200bf154730/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media/%7Bid%7D?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=Sr9QQE5FeQ1kZiBRhgzen-iUp1TWtwptLCeCFN1eyaE",
   DELETE_ENDPOINT:   "https://prod-09.germanywestcentral.logic.azure.com/workflows/2cfc9cc8144e474fa2a05f6e5fd8fa1f/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media/%7BeventId%7D/%7Bid%7D?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=qeXOun5tVlYx_7dId7v31DXf-Phd_M2EIxy2iqI1W8M",
   READ_SAS_ENDPOINT: "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateReadSas",
-  ADMIN_SECRET:      "EVENTSNAP2026",   // ← change this to your own secret
+  ADMIN_SECRET:      "EVENTSNAP2026",   // In a real app, this should be stored securely and not hardcoded in client-side code. This is just for demonstration purposes.
 };
 
 // ══════════════════════════════════
@@ -606,7 +606,7 @@ async function handleUpload(){
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
         uploaderName:uploader||currentUser.name,fileName:selectedFile.name,blobUrl,
         mediaType:selectedFile.type.startsWith('video/')?'video':'image',
-        uploadDate:new Date().toISOString()})});
+        uploadDate:new Date().toISOString(), ttl:31536000})});
     if(!metaRes.ok) throw new Error('Metadata save failed ('+metaRes.status+')');
     showAlert('up-success');clearFile();
     ['up-eventId','up-eventName','up-title','up-desc'].forEach(id=>{document.getElementById(id).value='';});
