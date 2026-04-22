@@ -126,6 +126,14 @@
     .media-actions{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
     .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:0.72rem;font-weight:600;background:var(--purple-bg);color:var(--purple);}
 
+    /* ── STATS BAR ── */
+    .stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+    .stat-icon{width:38px;height:38px;border-radius:9px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+    .stat-value{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:700;color:var(--purple);line-height:1;}
+    .stat-label{font-size:0.72rem;color:var(--text-muted);font-weight:500;margin-top:2px;}
+    @media(max-width:640px){.stats-bar{grid-template-columns:repeat(2,1fr);}}
+
     /* ── JOIN EVENT ── */
     .event-info-card{background:linear-gradient(135deg,var(--purple-bg),#fff);border:1px solid var(--purple-light);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:14px;}
     .event-info-title{font-family:'Sora',sans-serif;font-weight:700;font-size:1.1rem;color:var(--purple);}
@@ -199,7 +207,6 @@
     <!-- Signup -->
     <div id="aform-signup" style="display:none">
       <input class="auth-input" type="text"     id="s-name"    placeholder="Full Name"/>
-      <input class="auth-input" type="email"    id="s-email"   placeholder="Email Address"/>
       <input class="auth-input" type="text"     id="s-user"    placeholder="Choose a Username"/>
       <input class="auth-input" type="password" id="s-pass"    placeholder="Choose a Password"/>
       <input class="auth-input" type="password" id="s-confirm" placeholder="Confirm Password"/>
@@ -287,6 +294,12 @@
     <h1>Media Gallery</h1>
   </div>
   <div id="guest-gallery-notice" style="display:none"></div>
+  <div class="stats-bar" id="stats-bar" style="display:none">
+    <div class="stat-card"><div class="stat-icon">📦</div><div><div class="stat-value" id="stat-total">0</div><div class="stat-label">Total Media</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🖼️</div><div><div class="stat-value" id="stat-images">0</div><div class="stat-label">Images</div></div></div>
+    <div class="stat-card"><div class="stat-icon">🎬</div><div><div class="stat-value" id="stat-videos">0</div><div class="stat-label">Videos</div></div></div>
+    <div class="stat-card"><div class="stat-icon">📅</div><div><div class="stat-value" id="stat-events">0</div><div class="stat-label">Events</div></div></div>
+  </div>
   <div class="search-row">
     <input type="text" id="search-input" placeholder="🔍 Filter by event name or title..." oninput="filterGallery()"/>
     <button class="btn btn-ghost" onclick="loadGallery()">🔄 Refresh</button>
@@ -462,17 +475,15 @@ function doLogin() {
   if(!user||!pass){ authErr('Please enter username and password.'); return; }
   const users=getUsers();
   if(!users[user]||users[user].password!==btoa(pass)){ authErr('Invalid username or password.'); return; }
-  startSession(user, users[user].name, users[user].email||'', users[user].role||'guest');
+  startSession(user, users[user].name, users[user].role||'guest');
 }
 
 function doSignup() {
   const name=document.getElementById('s-name').value.trim(),
-        email=document.getElementById('s-email').value.trim(),
         user=document.getElementById('s-user').value.trim(),
         pass=document.getElementById('s-pass').value,
         conf=document.getElementById('s-confirm').value;
-  if(!name||!email||!user||!pass){ authErr('All fields are required.'); return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ authErr('Please enter a valid email address.'); return; }
+  if(!name||!user||!pass){ authErr('All fields are required.'); return; }
   if(pass!==conf){ authErr('Passwords do not match.'); return; }
   if(pass.length<4){ authErr('Password must be at least 4 characters.'); return; }
 
@@ -484,13 +495,13 @@ function doSignup() {
 
   const users=getUsers();
   if(users[user]){ authErr('Username already taken. Please choose another.'); return; }
-  users[user]={name, email, password:btoa(pass), role:selectedRole};
+  users[user]={name, password:btoa(pass), role:selectedRole};
   saveUsers(users);
-  startSession(user, name, email, selectedRole);
+  startSession(user, name, selectedRole);
 }
 
-function startSession(username, name, email, role) {
-  currentUser={username, name, email, role};
+function startSession(username, name, role) {
+  currentUser={username, name, role};
   localStorage.setItem('es_session', JSON.stringify(currentUser));
   document.getElementById('auth-modal').classList.remove('open');
 
@@ -536,7 +547,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
   const s=localStorage.getItem('es_session');
   if(s){
     const p=JSON.parse(s);
-    startSession(p.username, p.name, p.email||'', p.role||'guest');
+    startSession(p.username, p.name, p.role||'guest');
   } else {
     document.getElementById('upload-locked').style.display='block';
     document.getElementById('upload-form').style.display='none';
@@ -589,6 +600,21 @@ function clearFile(){
 }
 
 // ══════════════════════════════════
+//  STATS BAR
+// ══════════════════════════════════
+function updateStats(items){
+  if(!items||!items.length){document.getElementById('stats-bar').style.display='none';return;}
+  const images=items.filter(m=>m.mediaType==='image'||(m.fileName&&!/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName))).length;
+  const videos=items.length-images;
+  const events=new Set(items.map(m=>m.eventId).filter(Boolean)).size;
+  document.getElementById('stat-total').textContent=items.length;
+  document.getElementById('stat-images').textContent=images;
+  document.getElementById('stat-videos').textContent=videos;
+  document.getElementById('stat-events').textContent=events;
+  document.getElementById('stats-bar').style.display='grid';
+}
+
+// ══════════════════════════════════
 //  UPLOAD
 // ══════════════════════════════════
 async function handleUpload(){
@@ -598,6 +624,11 @@ async function handleUpload(){
   hideAlert('up-success');hideAlert('up-error');
   if(!selectedFile) return showErr('up-error','Please select a file first.');
   if(!eventId||!eventName||!title) return showErr('up-error','Event ID, Event Name and Title are required.');
+  // ── File validation ──
+  const maxSize=50*1024*1024; // 50MB
+  if(selectedFile.size>maxSize) return showErr('up-error','❌ File too large. Maximum size is 50MB.');
+  const allowed=['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/quicktime','video/x-msvideo','video/webm'];
+  if(!allowed.includes(selectedFile.type)) return showErr('up-error','❌ Invalid file type. Allowed: JPG, PNG, GIF, WebP, MP4, MOV, AVI, WebM.');
   setLoading('up-btn',true);
   try{
     const sasRes=await fetch(CONFIG.SAS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:selectedFile.name,eventId})});
@@ -607,10 +638,9 @@ async function handleUpload(){
     if(!upRes.ok) throw new Error('Blob upload failed ('+upRes.status+')');
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
-        uploaderName:uploader||currentUser.name,uploaderEmail:currentUser.email||'',
-        fileName:selectedFile.name,blobUrl,
+        uploaderName:uploader||currentUser.name,fileName:selectedFile.name,blobUrl,
         mediaType:selectedFile.type.startsWith('video/')?'video':'image',
-        uploadDate:new Date().toISOString(),ttl:31536000})});
+        uploadDate:new Date().toISOString()})});
     if(!metaRes.ok) throw new Error('Metadata save failed ('+metaRes.status+')');
     showAlert('up-success');clearFile();
     ['up-eventId','up-eventName','up-title','up-desc'].forEach(id=>{document.getElementById(id).value='';});
@@ -632,6 +662,7 @@ async function loadGallery(){
     if(!res.ok) throw new Error('GET failed ('+res.status+')');
     const data=await res.json();
     allMedia=Array.isArray(data)?data:(data.value||data.Documents||[]);
+    updateStats(allMedia);
     renderGallery(allMedia,'gallery-container',true);
   }catch(err){
     showErr('gallery-error','❌ '+err.message);
