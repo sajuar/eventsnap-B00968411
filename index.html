@@ -194,17 +194,37 @@ textarea{resize:vertical;min-height:80px;}
    GALLERY PAGE
 ══════════════════════════════════ */
 #page-gallery{min-height:100vh;}
-.gallery-hero{padding:3.5rem 2.5rem 2rem;position:relative;overflow:hidden;
-  background:linear-gradient(180deg,rgba(225,29,72,0.05) 0%,transparent 100%);}
-.gallery-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.4),transparent);}
+
+/* Welcome / homepage hero */
+.home-hero{padding:5rem 2.5rem 4rem;position:relative;overflow:hidden;text-align:center;
+  background:linear-gradient(180deg,rgba(225,29,72,0.06) 0%,rgba(37,99,235,0.03) 60%,transparent 100%);}
+.home-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.5),transparent);}
+.home-hero-badge{display:inline-block;padding:5px 16px;border-radius:99px;font-size:0.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1.5px;color:var(--rose-light);
+  background:rgba(225,29,72,0.1);border:1px solid rgba(225,29,72,0.2);margin-bottom:1.5rem;}
+.home-hero h1{font-family:var(--font-head);font-size:clamp(3.5rem,7vw,6.5rem);line-height:0.9;
+  letter-spacing:3px;color:var(--text);margin-bottom:1.5rem;}
+.home-hero h1 span{color:var(--rose);}
+.home-hero-desc{color:var(--text-muted);font-size:1.05rem;max-width:520px;margin:0 auto 2.5rem;line-height:1.7;}
+.home-hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.home-features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:0 2.5rem 3rem;max-width:860px;margin:0 auto;}
+.home-feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:12px;}
+.home-feature-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.home-feature-icon svg{width:19px;height:19px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.home-feature-icon.rose{background:rgba(225,29,72,0.12);} .home-feature-icon.rose svg{stroke:var(--rose-light);}
+.home-feature-icon.blue{background:rgba(37,99,235,0.12);} .home-feature-icon.blue svg{stroke:var(--blue-light);}
+.home-feature-icon.purple{background:rgba(124,58,237,0.12);} .home-feature-icon.purple svg{stroke:var(--purple-light);}
+.home-feature h4{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:3px;}
+.home-feature p{font-size:0.78rem;color:var(--text-muted);line-height:1.5;}
+.gallery-section-title{padding:0 2.5rem 1rem;display:flex;align-items:center;gap:16px;}
+.gallery-section-title h2{font-family:var(--font-head);font-size:1.6rem;letter-spacing:1px;color:var(--text);}
+.gallery-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Gallery hero label (kept for other uses) */
 .gallery-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
-  color:var(--rose-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
-.gallery-hero-label::before{content:'';width:24px;height:2px;background:var(--rose);border-radius:1px;}
-.gallery-hero h1{font-family:var(--font-head);font-size:clamp(3rem,6vw,5rem);line-height:0.95;
-  letter-spacing:2px;color:var(--text);margin-bottom:1rem;}
-.gallery-hero h1 span{color:var(--rose);}
-.gallery-hero-sub{color:var(--text-muted);font-size:1rem;max-width:500px;}
+  color:var(--rose-light);margin-bottom:0.75rem;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:0 2.5rem 2rem;}
 .stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
@@ -257,8 +277,7 @@ textarea{resize:vertical;min-height:80px;}
 .upload-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(37,99,235,0.4),transparent);}
 .upload-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
-  color:var(--blue-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
-.upload-hero-label::before{content:'';width:24px;height:2px;background:var(--blue);border-radius:1px;}
+  color:var(--blue-light);margin-bottom:0.75rem;}
 .upload-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);line-height:0.95;
   letter-spacing:2px;color:var(--text);margin-bottom:0.75rem;}
 .upload-hero h1 span{color:var(--blue-light);}
@@ -307,8 +326,7 @@ textarea{resize:vertical;min-height:80px;}
 .manage-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(124,58,237,0.4),transparent);}
 .manage-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
-  color:var(--purple-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
-.manage-hero-label::before{content:'';width:24px;height:2px;background:var(--purple);border-radius:1px;}
+  color:var(--purple-light);margin-bottom:0.75rem;}
 .manage-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:2px;color:var(--text);}
 .manage-hero h1 span{color:var(--purple-light);}
 .manage-body{padding:2.5rem;max-width:860px;}
@@ -399,9 +417,15 @@ textarea{resize:vertical;min-height:80px;}
   .profile-banner{height:140px;}
   .profile-header{margin-top:-40px;}
 }
+@media(max-width:768px){
+  .home-features{grid-template-columns:1fr;}
+  .home-hero{padding:3.5rem 1.5rem 3rem;}
+}
 @media(max-width:640px){
   .stats-grid{grid-template-columns:repeat(2,1fr);padding:0 1.25rem 1.5rem;}
-  .gallery-hero,.upload-hero,.manage-hero,.join-hero{padding-left:1.25rem;padding-right:1.25rem;}
+  .gallery-hero,.upload-hero,.manage-hero,.join-hero,.home-hero{padding-left:1.25rem;padding-right:1.25rem;}
+  .home-features{padding:0 1.25rem 2rem;}
+  .gallery-section-title{padding:0 1.25rem 1rem;}
   .gallery-toolbar,.media-grid,.manage-body,.join-body,.profile-body,.profile-header,.upload-form-wrap{padding-left:1.25rem;padding-right:1.25rem;}
   .form-row{grid-template-columns:1fr;}
   .nav-pills{display:none;}
@@ -557,11 +581,55 @@ textarea{resize:vertical;min-height:80px;}
      GALLERY PAGE
 ══════════════════════════════════ -->
 <div class="page active" id="page-gallery">
-  <div class="gallery-hero">
-    <div class="gallery-hero-label">Event Media</div>
-    <h1>YOUR MOMENTS,<br><span>FOREVER SAVED</span></h1>
-    <p class="gallery-hero-sub">Browse, search and download photos and videos from all your events.</p>
+
+  <!-- Homepage welcome section -->
+  <div class="home-hero">
+    <div class="home-hero-badge">Welcome to EventSnap</div>
+    <h1>CAPTURE EVERY<br><span>MOMENT</span></h1>
+    <p class="home-hero-desc">EventSnap is your all-in-one platform for collecting, sharing and reliving photos and videos from any event. Upload once, access anywhere.</p>
+    <div class="home-hero-ctas">
+      <button class="btn btn-primary" onclick="showPage('upload',document.getElementById('ntab-upload'))">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Media
+      </button>
+      <button class="btn btn-ghost" onclick="showPage('join',document.getElementById('ntab-join'))">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        Join an Event
+      </button>
+    </div>
   </div>
+
+  <div class="home-features">
+    <div class="home-feature">
+      <div class="home-feature-icon rose">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </div>
+      <div>
+        <h4>Photos and Videos</h4>
+        <p>Upload and browse images and videos from any event in one place.</p>
+      </div>
+    </div>
+    <div class="home-feature">
+      <div class="home-feature-icon blue">
+        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <div>
+        <h4>Join Any Event</h4>
+        <p>Enter an Event ID to instantly see all media shared for that event.</p>
+      </div>
+    </div>
+    <div class="home-feature">
+      <div class="home-feature-icon purple">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div>
+        <h4>Secure and Private</h4>
+        <p>Your media is protected. Only people with the Event ID can access it.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="gallery-section-title"><h2>Media Gallery</h2></div>
 
   <div class="stats-grid" id="stats-bar" style="display:none">
     <div class="stat-tile">
