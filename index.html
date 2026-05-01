@@ -3,33 +3,45 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>EventSnap – Cloud Media Platform</title>
+<title>EventSnap</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
+/* ── DARK MODE (default) ── */
 :root {
   --rose:#E11D48; --rose-dark:#9F0F2D; --rose-light:#FB7185;
   --blue:#2563EB; --blue-light:#60A5FA;
   --purple:#7C3AED; --purple-light:#A78BFA;
+  --green:#10b981; --red:#ef4444;
   --bg:#0d0d14; --bg2:#13131f; --bg3:#1a1a2e;
   --surface:rgba(255,255,255,0.04); --surface2:rgba(255,255,255,0.07);
   --border:rgba(255,255,255,0.08); --border2:rgba(255,255,255,0.14);
   --text:#f0f0f8; --text-muted:#8a8fa8; --text-dim:#555870;
-  --green:#10b981; --red:#ef4444;
-  --radius:16px; --radius-sm:10px; --radius-xs:7px;
-  --glow-rose:0 0 40px rgba(225,29,72,0.25);
-  --glow-blue:0 0 40px rgba(37,99,235,0.2);
+  --nav-bg:rgba(13,13,20,0.88);
   --shadow:0 4px 24px rgba(0,0,0,0.4);
   --shadow-lg:0 12px 48px rgba(0,0,0,0.6);
+  --radius:16px; --radius-sm:10px; --radius-xs:7px;
   --font-head:'Bebas Neue',sans-serif;
   --font-body:'Source Sans 3',sans-serif;
   --ease:cubic-bezier(0.16,1,0.3,1);
+  --blob-opacity:0.07;
+}
+/* ── LIGHT MODE ── */
+:root.light {
+  --bg:#f4f4f8; --bg2:#ffffff; --bg3:#eaeaf0;
+  --surface:rgba(0,0,0,0.03); --surface2:rgba(0,0,0,0.06);
+  --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.14);
+  --text:#0f0f1a; --text-muted:#5a5f78; --text-dim:#a0a4b8;
+  --nav-bg:rgba(244,244,248,0.92);
+  --shadow:0 4px 24px rgba(0,0,0,0.1);
+  --shadow-lg:0 12px 48px rgba(0,0,0,0.18);
+  --blob-opacity:0.05;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden;}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
 
 /* ── AMBIENT BLOBS ── */
-.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:0.07;}
+.blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:var(--blob-opacity);}
 .blob-1{width:600px;height:600px;background:var(--rose);top:-200px;right:-150px;animation:drift 12s ease-in-out infinite alternate;}
 .blob-2{width:500px;height:500px;background:var(--blue);bottom:-150px;left:-100px;animation:drift 15s ease-in-out infinite alternate-reverse;}
 .blob-3{width:400px;height:400px;background:var(--purple);top:50%;left:40%;animation:drift 18s ease-in-out infinite alternate;}
@@ -37,12 +49,12 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
 /* ── NAV ── */
 nav{position:sticky;top:0;z-index:200;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;
-  background:rgba(13,13,20,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);}
+  background:var(--nav-bg);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);transition:background 0.3s;}
 .nav-brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
-.nav-logo{width:38px;height:38px;}
+.nav-logo{width:38px;height:38px;flex-shrink:0;}
 .nav-wordmark{font-family:var(--font-head);font-size:1.6rem;letter-spacing:1px;
-  background:linear-gradient(135deg,#fff 0%,var(--rose-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  background:linear-gradient(135deg,var(--text) 0%,var(--rose-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .nav-pills{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px;}
 .nav-pill{display:flex;align-items:center;gap:6px;padding:7px 16px;border-radius:99px;border:none;background:transparent;
   cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:600;color:var(--text-muted);
@@ -51,35 +63,44 @@ nav{position:sticky;top:0;z-index:200;height:68px;display:flex;align-items:cente
 .nav-pill.active{background:var(--rose);color:#fff;box-shadow:0 0 20px rgba(225,29,72,0.4);}
 .nav-pill:hover:not(.active){background:var(--surface2);color:var(--text);}
 .nav-right{display:flex;align-items:center;gap:10px;}
+
+/* Theme toggle */
+.theme-toggle{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+.theme-toggle:hover{background:var(--surface2);border-color:var(--border2);}
+.theme-toggle svg{width:18px;height:18px;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:opacity 0.2s;}
+.theme-toggle .icon-moon{display:block;}
+.theme-toggle .icon-sun{display:none;}
+:root.light .theme-toggle .icon-moon{display:none;}
+:root.light .theme-toggle .icon-sun{display:block;}
+
 .nav-user-chip{display:flex;align-items:center;gap:8px;}
 .nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--purple));
   display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;color:#fff;flex-shrink:0;}
 .nav-uname{font-size:0.82rem;color:var(--text-muted);}
 .role-badge{padding:3px 10px;border-radius:99px;font-size:0.7rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
-.role-badge.admin{background:rgba(124,58,237,0.2);color:var(--purple-light);border:1px solid rgba(124,58,237,0.3);}
-.role-badge.guest{background:rgba(37,99,235,0.15);color:var(--blue-light);border:1px solid rgba(37,99,235,0.25);}
+.role-badge.admin{background:rgba(124,58,237,0.15);color:var(--purple-light);border:1px solid rgba(124,58,237,0.25);}
+.role-badge.guest{background:rgba(37,99,235,0.1);color:var(--blue-light);border:1px solid rgba(37,99,235,0.2);}
 .btn-nav{padding:8px 18px;border-radius:99px;border:none;cursor:pointer;font-family:var(--font-body);font-size:0.85rem;font-weight:600;transition:all 0.2s;}
 .btn-nav-ghost{background:var(--surface);color:var(--text);border:1px solid var(--border);}
 .btn-nav-ghost:hover{background:var(--surface2);border-color:var(--border2);}
 .btn-nav-fill{background:var(--rose);color:#fff;box-shadow:0 0 20px rgba(225,29,72,0.3);}
 .btn-nav-fill:hover{background:var(--rose-dark);box-shadow:0 0 30px rgba(225,29,72,0.5);}
-.btn-logout{padding:6px 14px;border:1px solid var(--border);border-radius:99px;background:transparent;color:var(--text-muted);
-  font-size:0.8rem;font-family:var(--font-body);font-weight:500;cursor:pointer;transition:all 0.2s;}
+.btn-logout{padding:6px 14px;border:1px solid var(--border);border-radius:99px;background:transparent;
+  color:var(--text-muted);font-size:0.8rem;font-family:var(--font-body);font-weight:500;cursor:pointer;transition:all 0.2s;}
 .btn-logout:hover{background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3);}
 
 /* ── MODALS ── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;
   align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
 .modal-overlay.open{display:flex;}
-
-/* Auth modal */
 .auth-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:2.5rem;
   width:90%;max-width:440px;box-shadow:var(--shadow-lg);position:relative;}
 .auth-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:120px;
-  background:var(--rose);filter:blur(60px);opacity:0.2;pointer-events:none;border-radius:50%;}
+  background:var(--rose);filter:blur(60px);opacity:0.15;pointer-events:none;border-radius:50%;}
 .auth-brand{text-align:center;margin-bottom:1.75rem;}
 .auth-brand-name{font-family:var(--font-head);font-size:2rem;letter-spacing:1px;
-  background:linear-gradient(135deg,#fff,var(--rose-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  background:linear-gradient(135deg,var(--text),var(--rose-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .auth-brand-sub{font-size:0.82rem;color:var(--text-muted);margin-top:4px;}
 .auth-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:99px;padding:4px;margin-bottom:1.5rem;}
 .auth-tab{flex:1;padding:9px;border:none;border-radius:99px;background:transparent;
@@ -88,28 +109,26 @@ nav{position:sticky;top:0;z-index:200;height:68px;display:flex;align-items:cente
 .auth-input{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);
   font-family:var(--font-body);font-size:0.9rem;color:var(--text);background:var(--surface);outline:none;
   transition:all 0.2s;margin-bottom:12px;}
-.auth-input:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,0.15);}
+.auth-input:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,0.12);}
 .auth-input::placeholder{color:var(--text-dim);}
 .role-select{display:flex;gap:10px;margin-bottom:12px;}
 .role-btn{flex:1;padding:12px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);
   background:var(--surface);cursor:pointer;font-family:var(--font-body);font-size:0.82rem;font-weight:600;
   color:var(--text-muted);transition:all 0.2s;text-align:center;}
-.role-btn.selected{border-color:var(--rose);background:rgba(225,29,72,0.1);color:var(--rose-light);}
+.role-btn.selected{border-color:var(--rose);background:rgba(225,29,72,0.08);color:var(--rose-light);}
 .role-btn svg{width:20px;height:20px;display:block;margin:0 auto 6px;stroke:currentColor;fill:none;stroke-width:1.5;}
 .role-hint{font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;padding:10px 14px;
   background:var(--surface);border-radius:var(--radius-xs);border:1px solid var(--border);}
 .auth-btn{width:100%;padding:13px;background:var(--rose);color:#fff;border:none;border-radius:var(--radius-sm);
   font-family:var(--font-body);font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.2s;
-  box-shadow:0 0 24px rgba(225,29,72,0.35);}
-.auth-btn:hover{background:var(--rose-dark);transform:translateY(-1px);box-shadow:0 0 32px rgba(225,29,72,0.5);}
+  box-shadow:0 0 24px rgba(225,29,72,0.3);}
+.auth-btn:hover{background:var(--rose-dark);transform:translateY(-1px);}
 .auth-error{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25);
   border-radius:var(--radius-xs);padding:10px 14px;font-size:0.85rem;margin-bottom:12px;display:none;}
 .auth-close{position:absolute;top:1.25rem;right:1.25rem;background:var(--surface);border:1px solid var(--border);
   border-radius:50%;width:32px;height:32px;cursor:pointer;color:var(--text-muted);
   display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
-.auth-close:hover{background:var(--surface2);color:var(--text);}
-
-/* Delete modal */
+.auth-close:hover{background:var(--surface2);}
 .del-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:2rem;
   width:90%;max-width:460px;box-shadow:var(--shadow-lg);position:relative;}
 .del-modal-title{font-family:var(--font-head);font-size:1.6rem;letter-spacing:0.5px;margin-bottom:1rem;color:var(--text);}
@@ -126,11 +145,11 @@ nav{position:sticky;top:0;z-index:200;height:68px;display:flex;align-items:cente
 /* ── BUTTONS ── */
 .btn{padding:10px 22px;border:none;border-radius:var(--radius-sm);font-family:var(--font-body);
   font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.18s var(--ease);
-  display:inline-flex;align-items:center;gap:8px;cursor:pointer;}
+  display:inline-flex;align-items:center;gap:8px;}
 .btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 .btn-primary{background:var(--rose);color:#fff;box-shadow:0 0 20px rgba(225,29,72,0.3);}
-.btn-primary:hover{background:var(--rose-dark);transform:translateY(-1px);box-shadow:0 0 28px rgba(225,29,72,0.5);}
-.btn-accent{background:var(--blue);color:#fff;box-shadow:0 0 20px rgba(37,99,235,0.3);}
+.btn-primary:hover{background:var(--rose-dark);transform:translateY(-1px);box-shadow:0 0 28px rgba(225,29,72,0.45);}
+.btn-accent{background:var(--blue);color:#fff;}
 .btn-accent:hover{background:#1d4ed8;transform:translateY(-1px);}
 .btn-success{background:var(--green);color:#fff;}
 .btn-success:hover{background:#059669;transform:translateY(-1px);}
@@ -148,40 +167,38 @@ nav{position:sticky;top:0;z-index:200;height:68px;display:flex;align-items:cente
 @keyframes spin{to{transform:rotate(360deg);}}
 .loading .spinner{display:inline-block;}
 .loading .btn-text{display:none;}
+.loading .btn-icon{display:none;}
 
 /* ── ALERTS ── */
 .alert{padding:12px 16px;border-radius:var(--radius-xs);font-size:0.88rem;font-weight:500;
   margin-bottom:1rem;display:none;align-items:center;gap:8px;}
-.alert-success{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25);}
-.alert-error{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.25);}
-.alert-info{background:rgba(37,99,235,0.1);color:var(--blue-light);border:1px solid rgba(37,99,235,0.25);}
+.alert-success{background:rgba(16,185,129,0.1);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2);}
+.alert-error{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
+.alert-info{background:rgba(37,99,235,0.1);color:var(--blue-light);border:1px solid rgba(37,99,235,0.2);}
 .alert.show{display:flex;}
 
-/* ── FORM ELEMENTS ── */
-label{display:block;font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+/* ── FORM ── */
+label{display:block;font-size:0.78rem;font-weight:700;color:var(--text-dim);margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:0.6px;}
 input[type="text"],input[type="email"],input[type="password"],textarea{
   width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-xs);
-  font-family:var(--font-body);font-size:0.9rem;color:var(--text);background:var(--surface);outline:none;transition:all 0.2s;}
-input:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,0.12);}
+  font-family:var(--font-body);font-size:0.9rem;color:var(--text);background:var(--surface);outline:none;
+  transition:all 0.2s;}
+input:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,0.1);}
 input::placeholder,textarea::placeholder{color:var(--text-dim);}
 textarea{resize:vertical;min-height:80px;}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 .form-group{margin-bottom:1rem;}
-
-/* ── GLASS CARD ── */
-.glass-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
-.glass-card-inner{padding:1.75rem;}
 
 /* ══════════════════════════════════
    GALLERY PAGE
 ══════════════════════════════════ */
 #page-gallery{min-height:100vh;}
 .gallery-hero{padding:3.5rem 2.5rem 2rem;position:relative;overflow:hidden;
-  background:linear-gradient(180deg,rgba(225,29,72,0.06) 0%,transparent 100%);}
+  background:linear-gradient(180deg,rgba(225,29,72,0.05) 0%,transparent 100%);}
 .gallery-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(225,29,72,0.4),transparent);}
-.gallery-hero-label{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+.gallery-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
   color:var(--rose-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
 .gallery-hero-label::before{content:'';width:24px;height:2px;background:var(--rose);border-radius:1px;}
 .gallery-hero h1{font-family:var(--font-head);font-size:clamp(3rem,6vw,5rem);line-height:0.95;
@@ -191,16 +208,16 @@ textarea{resize:vertical;min-height:80px;}
 
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:0 2.5rem 2rem;}
 .stat-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  padding:1.25rem;display:flex;align-items:center;gap:14px;transition:all 0.25s var(--ease);cursor:default;}
+  padding:1.25rem;display:flex;align-items:center;gap:14px;transition:all 0.25s var(--ease);}
 .stat-tile:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow);}
 .stat-icon-wrap{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .stat-icon-wrap svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
-.stat-icon-wrap.rose{background:rgba(225,29,72,0.15);color:var(--rose-light);}
-.stat-icon-wrap.blue{background:rgba(37,99,235,0.15);color:var(--blue-light);}
-.stat-icon-wrap.purple{background:rgba(124,58,237,0.15);color:var(--purple-light);}
-.stat-icon-wrap.green{background:rgba(16,185,129,0.15);color:#6ee7b7;}
+.stat-icon-wrap.rose{background:rgba(225,29,72,0.12);color:var(--rose-light);}
+.stat-icon-wrap.blue{background:rgba(37,99,235,0.12);color:var(--blue-light);}
+.stat-icon-wrap.purple{background:rgba(124,58,237,0.12);color:var(--purple-light);}
+.stat-icon-wrap.green{background:rgba(16,185,129,0.12);color:#6ee7b7;}
 .stat-val{font-family:var(--font-head);font-size:2rem;line-height:1;color:var(--text);}
-.stat-lbl{font-size:0.72rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.stat-lbl{font-size:0.7rem;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
 
 .gallery-toolbar{padding:0 2.5rem 1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
 .search-wrap{flex:1;min-width:200px;position:relative;}
@@ -210,88 +227,72 @@ textarea{resize:vertical;min-height:80px;}
 
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;padding:0 2.5rem 3rem;}
 .media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  overflow:hidden;transition:all 0.25s var(--ease);cursor:pointer;}
-.media-card:hover{border-color:rgba(225,29,72,0.3);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.5);}
+  overflow:hidden;transition:all 0.25s var(--ease);}
+.media-card:hover{border-color:rgba(225,29,72,0.25);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.3);}
 .media-thumb{width:100%;height:180px;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
 .media-thumb svg{width:40px;height:40px;stroke:var(--text-dim);fill:none;stroke-width:1.5;opacity:0.4;}
 .media-thumb img,.media-thumb video{width:100%;height:100%;object-fit:cover;}
-.media-type-badge{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:99px;font-size:0.7rem;
+.media-type-tag{position:absolute;top:10px;right:10px;padding:3px 10px;border-radius:99px;font-size:0.68rem;
   font-weight:700;text-transform:uppercase;letter-spacing:0.5px;backdrop-filter:blur(8px);}
-.media-type-badge.image{background:rgba(37,99,235,0.7);color:#fff;}
-.media-type-badge.video{background:rgba(225,29,72,0.7);color:#fff;}
+.media-type-tag.image{background:rgba(37,99,235,0.7);color:#fff;}
+.media-type-tag.video{background:rgba(225,29,72,0.7);color:#fff;}
 .media-body{padding:1rem 1.25rem 1.25rem;}
 .media-title{font-weight:700;font-size:0.95rem;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .media-event-tag{display:inline-block;padding:2px 10px;border-radius:99px;font-size:0.7rem;font-weight:700;
-  background:rgba(225,29,72,0.12);color:var(--rose-light);border:1px solid rgba(225,29,72,0.2);margin-bottom:6px;}
-.media-meta-row{display:flex;align-items:center;gap:6px;font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;}
-.media-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text-dim);flex-shrink:0;}
+  background:rgba(225,29,72,0.1);color:var(--rose-light);border:1px solid rgba(225,29,72,0.18);margin-bottom:6px;}
+.media-meta-row{font-size:0.78rem;color:var(--text-muted);margin-bottom:10px;}
 .media-actions{display:flex;gap:6px;flex-wrap:wrap;}
 
 .empty-state{text-align:center;padding:5rem 2rem;color:var(--text-muted);}
 .empty-state svg{width:64px;height:64px;stroke:var(--text-dim);fill:none;stroke-width:1.2;margin:0 auto 1.5rem;display:block;}
 .empty-state h3{font-family:var(--font-head);font-size:1.8rem;letter-spacing:1px;color:var(--text);margin-bottom:8px;}
-.empty-state p{font-size:0.9rem;}
 
 /* ══════════════════════════════════
    UPLOAD PAGE
 ══════════════════════════════════ */
 #page-upload{min-height:100vh;}
-.upload-layout{display:grid;grid-template-columns:1fr 1.6fr;min-height:calc(100vh - 68px);}
-.upload-sidebar{padding:3.5rem 2.5rem;background:linear-gradient(160deg,rgba(225,29,72,0.08) 0%,rgba(37,99,235,0.05) 100%);
-  border-right:1px solid var(--border);position:relative;overflow:hidden;}
-.upload-sidebar::after{content:'';position:absolute;bottom:-100px;left:-100px;width:350px;height:350px;
-  border-radius:50%;background:var(--rose);filter:blur(100px);opacity:0.06;pointer-events:none;}
-.upload-side-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
-  color:var(--rose-light);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
-.upload-side-label::before{content:'';width:20px;height:2px;background:var(--rose);}
-.upload-side-title{font-family:var(--font-head);font-size:clamp(2.5rem,4vw,3.5rem);line-height:0.95;
-  letter-spacing:2px;margin-bottom:1.5rem;}
-.upload-side-title span{display:block;color:var(--rose);}
-.upload-side-desc{color:var(--text-muted);font-size:0.9rem;line-height:1.7;margin-bottom:2rem;}
-.upload-features{display:flex;flex-direction:column;gap:14px;}
-.upload-feature{display:flex;align-items:flex-start;gap:12px;}
-.upload-feature-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.upload-feature-icon.rose{background:rgba(225,29,72,0.15);}
-.upload-feature-icon.blue{background:rgba(37,99,235,0.15);}
-.upload-feature-icon.green{background:rgba(16,185,129,0.15);}
-.upload-feature-icon svg{width:18px;height:18px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.upload-feature-icon.rose svg{stroke:var(--rose-light);}
-.upload-feature-icon.blue svg{stroke:var(--blue-light);}
-.upload-feature-icon.green svg{stroke:#6ee7b7;}
-.upload-feature h4{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:2px;}
-.upload-feature p{font-size:0.78rem;color:var(--text-muted);}
+.upload-hero{padding:3.5rem 2.5rem 2.5rem;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(37,99,235,0.05) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);}
+.upload-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(37,99,235,0.4),transparent);}
+.upload-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:var(--blue-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
+.upload-hero-label::before{content:'';width:24px;height:2px;background:var(--blue);border-radius:1px;}
+.upload-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);line-height:0.95;
+  letter-spacing:2px;color:var(--text);margin-bottom:0.75rem;}
+.upload-hero h1 span{color:var(--blue-light);}
+.upload-hero p{color:var(--text-muted);font-size:0.95rem;}
+.upload-form-wrap{max-width:760px;margin:0 auto;padding:2.5rem;}
 
-.upload-form-area{padding:3rem 2.5rem;overflow-y:auto;}
-.upload-form-title{font-family:var(--font-head);font-size:1.8rem;letter-spacing:1px;margin-bottom:1.75rem;}
+.section-divider{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--text-dim);margin:1.75rem 0 1rem;padding-bottom:8px;border-bottom:1px solid var(--border);}
 
 .dropzone{border:2px dashed var(--border2);border-radius:var(--radius);background:var(--surface);
   padding:2.5rem 1rem;text-align:center;cursor:pointer;transition:all 0.2s var(--ease);margin-bottom:1.25rem;}
-.dropzone:hover,.dropzone.dragover{border-color:var(--rose);background:rgba(225,29,72,0.05);box-shadow:0 0 0 4px rgba(225,29,72,0.08);}
-.dropzone-icon{width:56px;height:56px;border-radius:14px;background:rgba(225,29,72,0.12);
+.dropzone:hover,.dropzone.dragover{border-color:var(--blue);background:rgba(37,99,235,0.04);
+  box-shadow:0 0 0 4px rgba(37,99,235,0.06);}
+.dropzone-icon{width:56px;height:56px;border-radius:14px;background:rgba(37,99,235,0.1);
   display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;}
-.dropzone-icon svg{width:28px;height:28px;stroke:var(--rose-light);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
-.dropzone p{color:var(--text-muted);font-size:0.88rem;}
+.dropzone-icon svg{width:28px;height:28px;stroke:var(--blue-light);fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+.dropzone p{color:var(--text-muted);font-size:0.9rem;}
 .dropzone strong{color:var(--text);}
-.dropzone small{color:var(--text-dim);font-size:0.78rem;}
+.dropzone small{color:var(--text-dim);font-size:0.78rem;display:block;margin-top:6px;}
 #file-input{display:none;}
-.file-preview{display:flex;align-items:center;gap:12px;background:rgba(16,185,129,0.08);
-  border:1px solid rgba(16,185,129,0.2);border-radius:var(--radius-xs);padding:12px 16px;margin-bottom:1.25rem;}
-.file-preview-icon{width:36px;height:36px;border-radius:8px;background:rgba(16,185,129,0.15);
+.file-preview{display:flex;align-items:center;gap:12px;background:rgba(16,185,129,0.07);
+  border:1px solid rgba(16,185,129,0.18);border-radius:var(--radius-xs);padding:12px 16px;margin-bottom:1.25rem;}
+.file-preview-icon{width:36px;height:36px;border-radius:8px;background:rgba(16,185,129,0.12);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .file-preview-icon svg{width:18px;height:18px;stroke:#6ee7b7;fill:none;stroke-width:2;}
 .file-preview-name{font-size:0.85rem;color:var(--text);font-weight:600;flex:1;min-width:0;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
-.upload-section-title{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-  color:var(--text-dim);margin:1.5rem 0 1rem;padding-bottom:8px;border-bottom:1px solid var(--border);}
-
-/* locked state */
 .locked-screen{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 68px);}
 .locked-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:3rem 2.5rem;
   text-align:center;max-width:420px;position:relative;overflow:hidden;}
 .locked-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--rose),var(--purple));}
-.locked-icon{width:72px;height:72px;border-radius:20px;background:rgba(225,29,72,0.12);
+.locked-icon{width:72px;height:72px;border-radius:20px;background:rgba(225,29,72,0.1);
   display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;}
 .locked-icon svg{width:36px;height:36px;stroke:var(--rose-light);fill:none;stroke-width:1.5;}
 .locked-card h2{font-family:var(--font-head);font-size:2rem;letter-spacing:1px;margin-bottom:10px;}
@@ -301,24 +302,24 @@ textarea{resize:vertical;min-height:80px;}
    MANAGE PAGE
 ══════════════════════════════════ */
 #page-manage{min-height:100vh;}
-.manage-header{padding:3rem 2.5rem 2rem;border-bottom:1px solid var(--border);
-  background:linear-gradient(180deg,rgba(124,58,237,0.06) 0%,transparent 100%);}
-.manage-header-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+.manage-hero{padding:3.5rem 2.5rem 2.5rem;background:linear-gradient(180deg,rgba(124,58,237,0.05) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);position:relative;}
+.manage-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,58,237,0.4),transparent);}
+.manage-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
   color:var(--purple-light);margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
-.manage-header-label::before{content:'';width:20px;height:2px;background:var(--purple);border-radius:1px;}
-.manage-header h1{font-family:var(--font-head);font-size:3rem;letter-spacing:2px;color:var(--text);}
-.manage-header h1 span{color:var(--purple-light);}
-.manage-body{padding:2rem 2.5rem;}
+.manage-hero-label::before{content:'';width:24px;height:2px;background:var(--purple);border-radius:1px;}
+.manage-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:2px;color:var(--text);}
+.manage-hero h1 span{color:var(--purple-light);}
+.manage-body{padding:2.5rem;max-width:860px;}
 .manage-search-bar{display:flex;gap:10px;margin-bottom:2rem;flex-wrap:wrap;}
 .manage-search-bar input{flex:1;min-width:160px;}
-.manage-result{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
-  margin-top:0;overflow:hidden;}
-.manage-result-header{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;}
-.manage-result-title{font-family:var(--font-head);font-size:1.2rem;letter-spacing:0.5px;display:flex;align-items:center;gap:10px;}
-.manage-result-title svg{width:18px;height:18px;stroke:var(--purple-light);fill:none;stroke-width:2;}
-.manage-result-body{padding:1.75rem;}
-.manage-actions{display:flex;gap:10px;margin-top:0.5rem;}
+.manage-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.manage-panel-head{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-size:1.2rem;letter-spacing:0.5px;}
+.manage-panel-head svg{width:18px;height:18px;stroke:var(--purple-light);fill:none;stroke-width:2;}
+.manage-panel-body{padding:1.75rem;}
+.manage-actions{display:flex;gap:10px;margin-top:0.5rem;flex-wrap:wrap;}
 
 /* ══════════════════════════════════
    JOIN EVENT PAGE
@@ -326,27 +327,24 @@ textarea{resize:vertical;min-height:80px;}
 #page-join{min-height:100vh;}
 .join-hero{padding:5rem 2.5rem 3rem;text-align:center;position:relative;overflow:hidden;}
 .join-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(37,99,235,0.5),transparent);}
+  background:linear-gradient(90deg,transparent,rgba(37,99,235,0.4),transparent);}
 .join-hero-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:600px;height:300px;background:radial-gradient(ellipse,rgba(37,99,235,0.1) 0%,transparent 70%);pointer-events:none;}
+  width:600px;height:300px;background:radial-gradient(ellipse,rgba(37,99,235,0.08) 0%,transparent 70%);pointer-events:none;}
 .join-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
-  color:var(--blue-light);margin-bottom:1rem;display:inline-flex;align-items:center;gap:8px;}
-.join-hero-label::before,.join-hero-label::after{content:'';flex:1;height:1px;width:24px;background:var(--blue);}
+  color:var(--blue-light);margin-bottom:1rem;display:inline-block;}
 .join-hero h1{font-family:var(--font-head);font-size:clamp(3rem,6vw,5rem);letter-spacing:3px;margin-bottom:1rem;}
 .join-hero h1 span{color:var(--blue-light);}
-.join-hero-sub{color:var(--text-muted);font-size:1rem;max-width:460px;margin:0 auto 2.5rem;}
+.join-hero-sub{color:var(--text-muted);font-size:1rem;max-width:440px;margin:0 auto 2.5rem;}
 .join-search-box{max-width:560px;margin:0 auto;display:flex;gap:0;border-radius:var(--radius);overflow:hidden;
-  border:1px solid var(--border);background:var(--surface);box-shadow:0 0 40px rgba(37,99,235,0.1);}
+  border:1px solid var(--border);background:var(--surface);}
 .join-search-box input{flex:1;padding:16px 20px;border:none;background:transparent;font-family:var(--font-body);
   font-size:1rem;color:var(--text);outline:none;}
 .join-search-box input::placeholder{color:var(--text-dim);}
 .join-search-box .btn{border-radius:0 var(--radius) var(--radius) 0;padding:16px 24px;}
-
 .join-body{padding:0 2.5rem 3rem;max-width:800px;margin:0 auto;}
-.event-result-card{background:var(--surface);border:1px solid rgba(37,99,235,0.25);border-radius:var(--radius);
-  padding:1.5rem;margin:2rem 0 1.5rem;display:flex;align-items:center;gap:16px;
-  box-shadow:0 0 30px rgba(37,99,235,0.08);}
-.event-result-icon{width:56px;height:56px;border-radius:14px;background:rgba(37,99,235,0.15);
+.event-result-card{background:var(--surface);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius);
+  padding:1.5rem;margin:2rem 0 1.5rem;display:flex;align-items:center;gap:16px;}
+.event-result-icon{width:56px;height:56px;border-radius:14px;background:rgba(37,99,235,0.12);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .event-result-icon svg{width:28px;height:28px;stroke:var(--blue-light);fill:none;stroke-width:1.75;}
 .event-result-name{font-family:var(--font-head);font-size:1.5rem;letter-spacing:0.5px;margin-bottom:4px;}
@@ -357,64 +355,54 @@ textarea{resize:vertical;min-height:80px;}
 ══════════════════════════════════ */
 #page-profile{min-height:100vh;}
 .profile-banner{height:200px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,#0d0d14 0%,rgba(225,29,72,0.15) 50%,rgba(37,99,235,0.1) 100%);}
-.profile-banner::after{content:'';position:absolute;inset:0;
-  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
-.profile-banner-line{position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.4),transparent);}
-
+  background:linear-gradient(135deg,var(--bg) 0%,rgba(225,29,72,0.12) 50%,rgba(37,99,235,0.08) 100%);}
+.profile-banner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.35),transparent);}
 .profile-header{padding:0 2.5rem;position:relative;margin-top:-50px;margin-bottom:2rem;}
 .profile-avatar-ring{width:100px;height:100px;border-radius:50%;padding:3px;
   background:linear-gradient(135deg,var(--rose),var(--purple));display:inline-block;margin-bottom:1rem;}
 .profile-avatar{width:94px;height:94px;border-radius:50%;background:linear-gradient(135deg,var(--rose-dark),var(--purple));
-  display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:2.5rem;
-  color:#fff;letter-spacing:1px;}
+  display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:2.5rem;color:#fff;letter-spacing:1px;}
 .profile-name{font-family:var(--font-head);font-size:2.5rem;letter-spacing:1px;margin-bottom:4px;}
-.profile-email{font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.profile-email svg{width:14px;height:14px;stroke:var(--text-dim);fill:none;stroke-width:2;}
+.profile-email{font-size:0.88rem;color:var(--text-muted);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.profile-email svg{width:14px;height:14px;stroke:var(--text-dim);fill:none;stroke-width:2;flex-shrink:0;}
 .profile-badges{display:flex;gap:8px;flex-wrap:wrap;}
-
-.profile-body{padding:0 2.5rem 3rem;display:grid;grid-template-columns:300px 1fr;gap:2rem;}
-.profile-sidebar{}
-.profile-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;}
-.profile-stat-card h3{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  color:var(--text-dim);margin-bottom:1rem;}
+.profile-body{padding:0 2.5rem 3rem;display:grid;grid-template-columns:280px 1fr;gap:2rem;}
+.profile-side-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;}
+.profile-side-card h3{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:1rem;}
 .profile-stat-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;
   border-bottom:1px solid var(--border);font-size:0.88rem;}
 .profile-stat-row:last-child{border-bottom:none;}
-.profile-stat-row-label{color:var(--text-muted);display:flex;align-items:center;gap:8px;}
-.profile-stat-row-label svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;}
-.profile-stat-row-val{font-weight:700;color:var(--text);}
-
-.profile-main{}
+.profile-stat-label{color:var(--text-muted);display:flex;align-items:center;gap:8px;}
+.profile-stat-label svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+.profile-stat-val{font-weight:700;color:var(--text);}
 .profile-section-title{font-family:var(--font-head);font-size:1.4rem;letter-spacing:0.5px;
-  margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;}
+  margin-bottom:1.25rem;display:flex;align-items:center;gap:12px;}
 .profile-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
-
 .profile-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2rem;}
 .profile-info-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.25rem;}
 .profile-info-item label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);display:block;margin-bottom:6px;}
 .profile-info-item span{font-size:0.95rem;color:var(--text);font-weight:600;}
+.profile-uploads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;}
+.profile-upload-item{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.profile-upload-thumb{height:110px;background:var(--bg3);display:flex;align-items:center;justify-content:center;}
+.profile-upload-thumb svg{width:32px;height:32px;stroke:var(--text-dim);fill:none;stroke-width:1.5;opacity:0.5;}
+.profile-upload-info{padding:10px 12px;}
+.profile-upload-title{font-size:0.83rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.profile-upload-event{font-size:0.72rem;color:var(--text-muted);margin-top:2px;}
+.profile-empty{text-align:center;padding:2.5rem;color:var(--text-muted);}
+.profile-empty svg{width:40px;height:40px;stroke:var(--text-dim);fill:none;stroke-width:1.2;margin:0 auto 1rem;display:block;}
 
-.profile-activity{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;}
-.profile-activity-empty{text-align:center;padding:2.5rem 1rem;color:var(--text-muted);}
-.profile-activity-empty svg{width:40px;height:40px;stroke:var(--text-dim);fill:none;stroke-width:1.2;margin:0 auto 1rem;display:block;}
-
-/* ══════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════ */
+/* ── RESPONSIVE ── */
 @media(max-width:900px){
-  .upload-layout{grid-template-columns:1fr;}
-  .upload-sidebar{padding:2rem 1.5rem;}
   .profile-body{grid-template-columns:1fr;}
   .profile-banner{height:140px;}
   .profile-header{margin-top:-40px;}
 }
 @media(max-width:640px){
   .stats-grid{grid-template-columns:repeat(2,1fr);padding:0 1.25rem 1.5rem;}
-  .gallery-hero{padding:2.5rem 1.25rem 1.5rem;}
-  .gallery-toolbar,.media-grid,.manage-body,.join-body,.profile-body,.profile-header{padding-left:1.25rem;padding-right:1.25rem;}
-  .manage-header,.upload-form-area,.join-hero{padding-left:1.25rem;padding-right:1.25rem;}
+  .gallery-hero,.upload-hero,.manage-hero,.join-hero{padding-left:1.25rem;padding-right:1.25rem;}
+  .gallery-toolbar,.media-grid,.manage-body,.join-body,.profile-body,.profile-header,.upload-form-wrap{padding-left:1.25rem;padding-right:1.25rem;}
   .form-row{grid-template-columns:1fr;}
   .nav-pills{display:none;}
   .profile-info-grid{grid-template-columns:1fr;}
@@ -425,7 +413,6 @@ textarea{resize:vertical;min-height:80px;}
 </head>
 <body>
 
-<!-- Ambient blobs -->
 <div class="blob blob-1"></div>
 <div class="blob blob-2"></div>
 <div class="blob blob-3"></div>
@@ -438,8 +425,8 @@ textarea{resize:vertical;min-height:80px;}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
     <div class="auth-brand">
-      <svg class="nav-logo" style="display:block;margin:0 auto 10px" viewBox="0 0 44 44" fill="none">
-        <circle cx="22" cy="22" r="20" fill="rgba(225,29,72,0.15)"/>
+      <svg style="display:block;margin:0 auto 10px;width:44px;height:44px" viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="20" fill="rgba(225,29,72,0.12)"/>
         <circle cx="22" cy="22" r="5" fill="#E11D48"/>
         <line x1="22" y1="4" x2="22" y2="10" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round"/>
         <line x1="22" y1="34" x2="22" y2="40" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round"/>
@@ -451,7 +438,7 @@ textarea{resize:vertical;min-height:80px;}
         <line x1="13" y1="31" x2="8" y2="36" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round"/>
       </svg>
       <div class="auth-brand-name">EventSnap</div>
-      <div class="auth-brand-sub">Cloud Media Platform</div>
+      <div class="auth-brand-sub">Share your event moments</div>
     </div>
     <div class="auth-tabs">
       <button class="auth-tab active" id="atab-login" onclick="switchAuthTab('login')">Log In</button>
@@ -468,15 +455,15 @@ textarea{resize:vertical;min-height:80px;}
       <input class="auth-input" type="email" id="s-email" placeholder="Email address"/>
       <input class="auth-input" type="password" id="s-pass" placeholder="Choose a password"/>
       <input class="auth-input" type="password" id="s-confirm" placeholder="Confirm password"/>
-      <label style="font-size:0.8rem;font-weight:700;margin-bottom:8px;display:block;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Select role</label>
+      <label style="margin-bottom:8px">Select role</label>
       <div class="role-select">
         <div class="role-btn selected" id="role-guest-btn" onclick="selectRole('guest')">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          Guest<br><small style="font-weight:400;font-size:0.72rem;color:var(--text-dim)">Upload &amp; view</small>
+          Guest<br><small style="font-weight:400;font-size:0.7rem;color:var(--text-dim)">Upload and view</small>
         </div>
         <div class="role-btn" id="role-admin-btn" onclick="selectRole('admin')">
           <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
-          Admin<br><small style="font-weight:400;font-size:0.72rem;color:var(--text-dim)">Full access</small>
+          Admin<br><small style="font-weight:400;font-size:0.7rem;color:var(--text-dim)">Full access</small>
         </div>
       </div>
       <div id="admin-key-field" style="display:none">
@@ -496,7 +483,7 @@ textarea{resize:vertical;min-height:80px;}
     </button>
     <div class="del-modal-title">Confirm Delete</div>
     <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6">
-      This permanently deletes <strong id="del-label" style="color:var(--text)"></strong> from Cosmos DB and Azure Blob Storage. This action cannot be undone.
+      This will permanently delete <strong id="del-label" style="color:var(--text)"></strong>. This action cannot be undone.
     </p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeDelModal()">Cancel</button>
@@ -509,9 +496,9 @@ textarea{resize:vertical;min-height:80px;}
 
 <!-- ══ NAVBAR ══ -->
 <nav>
-  <a class="nav-brand" onclick="showPage('gallery',null)" href="#">
+  <a class="nav-brand" onclick="showPage('gallery',null);return false;" href="#">
     <svg class="nav-logo" viewBox="0 0 38 38" fill="none">
-      <circle cx="19" cy="19" r="17" fill="rgba(225,29,72,0.15)"/>
+      <circle cx="19" cy="19" r="17" fill="rgba(225,29,72,0.12)"/>
       <circle cx="19" cy="19" r="4.5" fill="#E11D48"/>
       <line x1="19" y1="4" x2="19" y2="9" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/>
       <line x1="19" y1="29" x2="19" y2="34" stroke="#E11D48" stroke-width="2" stroke-linecap="round"/>
@@ -549,6 +536,10 @@ textarea{resize:vertical;min-height:80px;}
   </div>
 
   <div class="nav-right">
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" aria-label="Toggle theme">
+      <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
     <div id="nav-logged-out" style="display:flex;gap:8px">
       <button class="btn-nav btn-nav-ghost" onclick="openAuthModal('login')">Log In</button>
       <button class="btn-nav btn-nav-fill" onclick="openAuthModal('signup')">Sign Up</button>
@@ -567,17 +558,17 @@ textarea{resize:vertical;min-height:80px;}
 ══════════════════════════════════ -->
 <div class="page active" id="page-gallery">
   <div class="gallery-hero">
-    <div class="gallery-hero-label">Event Media Platform</div>
-    <h1>YOUR MOMENTS,<br><span>FOREVER STORED</span></h1>
-    <p class="gallery-hero-sub">Browse, search and download photos &amp; videos from your events — all powered by Azure cloud.</p>
+    <div class="gallery-hero-label">Event Media</div>
+    <h1>YOUR MOMENTS,<br><span>FOREVER SAVED</span></h1>
+    <p class="gallery-hero-sub">Browse, search and download photos and videos from all your events.</p>
   </div>
 
   <div class="stats-grid" id="stats-bar" style="display:none">
     <div class="stat-tile">
       <div class="stat-icon-wrap rose">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M9 9h.01M15 15h.01"/><line x1="9" y1="15" x2="15" y2="9"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       </div>
-      <div><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total Media</div></div>
+      <div><div class="stat-val" id="stat-total">0</div><div class="stat-lbl">Total</div></div>
     </div>
     <div class="stat-tile">
       <div class="stat-icon-wrap blue">
@@ -610,12 +601,12 @@ textarea{resize:vertical;min-height:80px;}
     </button>
   </div>
 
-  <div class="alert alert-error" id="gallery-error" style="margin:0 2.5rem 1rem;"></div>
+  <div class="alert alert-error" id="gallery-error" style="margin:0 2.5rem 1rem"></div>
   <div id="gallery-container">
     <div class="empty-state">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       <h3>No Media Loaded</h3>
-      <p>Click Refresh to load from Azure Cosmos DB.</p>
+      <p>Click Refresh to load the gallery.</p>
     </div>
   </div>
 </div>
@@ -631,80 +622,57 @@ textarea{resize:vertical;min-height:80px;}
           <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
         <h2>Login Required</h2>
-        <p>You need to log in or create an account to upload media to EventSnap.</p>
-        <button class="btn btn-primary btn-full" onclick="openAuthModal('login')">Log In / Sign Up</button>
+        <p>Log in or create an account to upload media to EventSnap.</p>
+        <button class="btn btn-primary btn-full" onclick="openAuthModal('login')">Log In or Sign Up</button>
       </div>
     </div>
   </div>
 
   <div id="upload-form">
-    <div class="upload-layout">
-      <div class="upload-sidebar">
-        <div class="upload-side-label">Media Upload</div>
-        <h2 class="upload-side-title">SHARE<br><span>YOUR EVENT</span><br>MOMENTS</h2>
-        <p class="upload-side-desc">Upload photos and videos directly to Azure Blob Storage. All metadata is saved to Cosmos DB for easy retrieval.</p>
-        <div class="upload-features">
-          <div class="upload-feature">
-            <div class="upload-feature-icon rose">
-              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            </div>
-            <div><h4>Direct Azure Upload</h4><p>Files go straight to Blob Storage via SAS token — no server middleman.</p></div>
-          </div>
-          <div class="upload-feature">
-            <div class="upload-feature-icon blue">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
-            <div><h4>Smart Metadata</h4><p>Event name, title, description and uploader info stored in Cosmos DB.</p></div>
-          </div>
-          <div class="upload-feature">
-            <div class="upload-feature-icon green">
-              <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
-            <div><h4>File Validation</h4><p>Images up to 15MB, videos up to 300MB. JPG, PNG, GIF, WebP, MP4, MOV, AVI.</p></div>
-          </div>
+    <div class="upload-hero">
+      <div class="upload-hero-label">Share Media</div>
+      <h1>UPLOAD YOUR<br><span>EVENT MEDIA</span></h1>
+      <p>Add photos and videos to any event instantly.</p>
+    </div>
+
+    <div class="upload-form-wrap">
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+        <div class="dropzone-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         </div>
+        <p><strong>Drag and drop here</strong> or click to browse</p>
+        <small>JPG, PNG, GIF, WebP, MP4, MOV, AVI &nbsp; Images up to 15MB &nbsp; Videos up to 300MB</small>
+      </div>
+      <input type="file" id="file-input" accept="image/*,video/*"/>
+
+      <div class="file-preview" id="file-preview" style="display:none">
+        <div class="file-preview-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <span id="file-name-display" class="file-preview-name"></span>
+        <button class="btn btn-ghost btn-sm" style="margin-left:auto;flex-shrink:0" onclick="clearFile()">Remove</button>
       </div>
 
-      <div class="upload-form-area">
-        <div class="upload-form-title">Upload Media</div>
-
-        <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
-          <div class="dropzone-icon">
-            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          </div>
-          <p><strong>Drag &amp; Drop here</strong> or click to browse</p>
-          <small style="display:block;margin-top:6px;">JPG, PNG, GIF, WebP, MP4, MOV, AVI — Images 15MB / Videos 300MB</small>
-        </div>
-        <input type="file" id="file-input" accept="image/*,video/*"/>
-
-        <div class="file-preview" id="file-preview" style="display:none">
-          <div class="file-preview-icon">
-            <svg id="file-icon-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          </div>
-          <span id="file-name-display" class="file-preview-name"></span>
-          <button class="btn btn-ghost btn-sm" style="margin-left:auto;flex-shrink:0" onclick="clearFile()">Remove</button>
-        </div>
-
-        <div class="upload-section-title">Event Details</div>
-        <div class="form-row">
-          <div class="form-group"><label>Event ID *</label><input type="text" id="up-eventId" placeholder="e.g. event-001"/></div>
-          <div class="form-group"><label>Event Name *</label><input type="text" id="up-eventName" placeholder="e.g. Graduation 2026"/></div>
-        </div>
-        <div class="upload-section-title">Media Details</div>
-        <div class="form-row">
-          <div class="form-group"><label>Media Title *</label><input type="text" id="up-title" placeholder="e.g. Stage photo"/></div>
-          <div class="form-group"><label>Uploader Name</label><input type="text" id="up-uploader" placeholder="Your name"/></div>
-        </div>
-        <div class="form-group"><label>Description</label><textarea id="up-desc" placeholder="Optional description..."></textarea></div>
-
-        <div class="alert alert-success" id="up-success">Media uploaded and metadata saved to Cosmos DB!</div>
-        <div class="alert alert-error" id="up-error"></div>
-        <button class="btn btn-primary btn-full" id="up-btn" onclick="handleUpload()">
-          <div class="spinner"></div>
-          <svg class="btn-text" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <span class="btn-text">Upload to Azure</span>
-        </button>
+      <div class="section-divider">Event Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>Event ID</label><input type="text" id="up-eventId" placeholder="eg. event-001"/></div>
+        <div class="form-group"><label>Event Name</label><input type="text" id="up-eventName" placeholder="eg. Graduation 2026"/></div>
       </div>
+
+      <div class="section-divider">Media Details</div>
+      <div class="form-row">
+        <div class="form-group"><label>Title</label><input type="text" id="up-title" placeholder="eg. Stage photo"/></div>
+        <div class="form-group"><label>Uploader Name</label><input type="text" id="up-uploader" placeholder="Your name"/></div>
+      </div>
+      <div class="form-group"><label>Description</label><textarea id="up-desc" placeholder="Optional description"></textarea></div>
+
+      <div class="alert alert-success" id="up-success">Uploaded successfully!</div>
+      <div class="alert alert-error" id="up-error"></div>
+      <button class="btn btn-primary btn-full" id="up-btn" onclick="handleUpload()">
+        <div class="spinner"></div>
+        <svg class="btn-icon" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span class="btn-text">Upload</span>
+      </button>
     </div>
   </div>
 </div>
@@ -713,14 +681,14 @@ textarea{resize:vertical;min-height:80px;}
      MANAGE PAGE
 ══════════════════════════════════ -->
 <div class="page" id="page-manage">
-  <div class="manage-header">
-    <div class="manage-header-label">Admin Panel</div>
+  <div class="manage-hero">
+    <div class="manage-hero-label">Admin Panel</div>
     <h1>MANAGE <span>MEDIA</span></h1>
   </div>
   <div class="manage-body">
     <div class="manage-search-bar">
-      <input type="text" id="mg-id" placeholder="Media ID (e.g. media-1776244229428)" style="flex:1"/>
-      <input type="text" id="mg-eventId" placeholder="Event ID (e.g. event-001)" style="flex:1"/>
+      <input type="text" id="mg-id" placeholder="Media ID (eg. media-1234567890)"/>
+      <input type="text" id="mg-eventId" placeholder="Event ID (eg. event-001)"/>
       <button class="btn btn-ghost" onclick="findMedia()">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Search
@@ -728,14 +696,12 @@ textarea{resize:vertical;min-height:80px;}
     </div>
     <div class="alert alert-error" id="mg-find-error" style="margin-bottom:1rem"></div>
 
-    <div class="manage-result" id="mg-result-card" style="display:none">
-      <div class="manage-result-header">
-        <div class="manage-result-title">
-          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Edit Record
-        </div>
+    <div class="manage-panel" id="mg-result-card" style="display:none">
+      <div class="manage-panel-head">
+        <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Edit Record
       </div>
-      <div class="manage-result-body">
+      <div class="manage-panel-body">
         <div class="form-row">
           <div class="form-group"><label>Event Name</label><input type="text" id="mg-eventName"/></div>
           <div class="form-group"><label>Media Title</label><input type="text" id="mg-title"/></div>
@@ -747,12 +713,12 @@ textarea{resize:vertical;min-height:80px;}
         <div class="manage-actions">
           <button class="btn btn-primary" id="mg-save-btn" onclick="handleUpdate()">
             <div class="spinner"></div>
-            <svg class="btn-text" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <svg class="btn-icon" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
             <span class="btn-text">Save Changes</span>
           </button>
           <button class="btn btn-danger" onclick="confirmDelete()">
             <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-            Delete Media
+            Delete
           </button>
         </div>
       </div>
@@ -768,16 +734,16 @@ textarea{resize:vertical;min-height:80px;}
     <div class="join-hero-bg"></div>
     <div class="join-hero-label">Event Access</div>
     <h1>JOIN AN <span>EVENT</span></h1>
-    <p class="join-hero-sub">Enter an Event ID to browse all media from that specific event — photos and videos in one place.</p>
+    <p class="join-hero-sub">Enter an Event ID to browse all photos and videos from that event.</p>
     <div class="join-search-box">
-      <input type="text" id="join-eventId" placeholder="Enter Event ID (e.g. event-001)"/>
+      <input type="text" id="join-eventId" placeholder="Enter Event ID (eg. event-001)"/>
       <button class="btn btn-accent" id="join-btn" onclick="handleJoinEvent()">
         <div class="spinner"></div>
-        <svg class="btn-text" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <svg class="btn-icon" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span class="btn-text">Find Event</span>
       </button>
     </div>
-    <div class="alert alert-error" id="join-error" style="max-width:560px;margin:1.25rem auto 0;"></div>
+    <div class="alert alert-error" id="join-error" style="max-width:560px;margin:1.25rem auto 0"></div>
   </div>
 
   <div class="join-body">
@@ -801,59 +767,57 @@ textarea{resize:vertical;min-height:80px;}
      PROFILE PAGE
 ══════════════════════════════════ -->
 <div class="page" id="page-profile">
-  <div class="profile-banner">
-    <div class="profile-banner-line"></div>
-  </div>
+  <div class="profile-banner"></div>
   <div class="profile-header">
     <div class="profile-avatar-ring">
       <div class="profile-avatar" id="profile-avatar-initials">?</div>
     </div>
-    <div class="profile-name" id="profile-name">—</div>
+    <div class="profile-name" id="profile-name">Loading</div>
     <div class="profile-email">
       <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-      <span id="profile-email-text">—</span>
+      <span id="profile-email-text">Loading</span>
     </div>
     <div class="profile-badges">
       <span class="role-badge" id="profile-role-badge"></span>
-      <span style="padding:3px 12px;border-radius:99px;font-size:0.7rem;font-weight:700;background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25);">Active</span>
+      <span style="padding:3px 12px;border-radius:99px;font-size:0.7rem;font-weight:700;background:rgba(16,185,129,0.12);color:#6ee7b7;border:1px solid rgba(16,185,129,0.2);">Active</span>
     </div>
   </div>
 
   <div class="profile-body">
-    <div class="profile-sidebar">
-      <div class="profile-stat-card">
-        <h3>Account Stats</h3>
+    <div>
+      <div class="profile-side-card">
+        <h3>Stats</h3>
         <div class="profile-stat-row">
-          <span class="profile-stat-row-label">
+          <span class="profile-stat-label">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            Total Uploads
+            Uploads
           </span>
-          <span class="profile-stat-row-val" id="profile-stat-uploads">—</span>
+          <span class="profile-stat-val" id="profile-stat-uploads">0</span>
         </div>
         <div class="profile-stat-row">
-          <span class="profile-stat-row-label">
+          <span class="profile-stat-label">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            My Images
+            Images
           </span>
-          <span class="profile-stat-row-val" id="profile-stat-images">—</span>
+          <span class="profile-stat-val" id="profile-stat-images">0</span>
         </div>
         <div class="profile-stat-row">
-          <span class="profile-stat-row-label">
+          <span class="profile-stat-label">
             <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            My Videos
+            Videos
           </span>
-          <span class="profile-stat-row-val" id="profile-stat-videos">—</span>
+          <span class="profile-stat-val" id="profile-stat-videos">0</span>
         </div>
         <div class="profile-stat-row">
-          <span class="profile-stat-row-label">
+          <span class="profile-stat-label">
             <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             Events
           </span>
-          <span class="profile-stat-row-val" id="profile-stat-events">—</span>
+          <span class="profile-stat-val" id="profile-stat-events">0</span>
         </div>
       </div>
 
-      <div class="profile-stat-card">
+      <div class="profile-side-card">
         <h3>Quick Actions</h3>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
           <button class="btn btn-primary btn-full" onclick="showPage('upload',document.getElementById('ntab-upload'))">
@@ -864,7 +828,7 @@ textarea{resize:vertical;min-height:80px;}
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             Browse Gallery
           </button>
-          <button class="btn btn-ghost btn-full" style="border-color:rgba(239,68,68,0.2);color:#fca5a5" onclick="doLogout()">
+          <button class="btn btn-ghost btn-full" style="color:#fca5a5;border-color:rgba(239,68,68,0.2)" onclick="doLogout()">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Log Out
           </button>
@@ -872,32 +836,32 @@ textarea{resize:vertical;min-height:80px;}
       </div>
     </div>
 
-    <div class="profile-main">
+    <div>
       <div class="profile-section-title">Account Information</div>
       <div class="profile-info-grid">
         <div class="profile-info-item">
           <label>Full Name</label>
-          <span id="profile-info-name">—</span>
+          <span id="profile-info-name">Loading</span>
         </div>
         <div class="profile-info-item">
-          <label>Email Address</label>
-          <span id="profile-info-email">—</span>
+          <label>Email</label>
+          <span id="profile-info-email">Loading</span>
         </div>
         <div class="profile-info-item">
-          <label>Account Role</label>
-          <span id="profile-info-role">—</span>
+          <label>Role</label>
+          <span id="profile-info-role">Loading</span>
         </div>
         <div class="profile-info-item">
-          <label>Account Status</label>
+          <label>Status</label>
           <span style="color:#6ee7b7">Active</span>
         </div>
       </div>
 
       <div class="profile-section-title">My Recent Uploads</div>
-      <div class="profile-activity" id="profile-uploads-container">
-        <div class="profile-activity-empty">
+      <div id="profile-uploads-container">
+        <div class="profile-empty">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          <p>Your uploads will appear here once you've shared some media.</p>
+          <p>Your uploads will appear here.</p>
         </div>
       </div>
     </div>
@@ -916,9 +880,19 @@ const CONFIG = {
   DELETE_ENDPOINT:  "https://prod-09.germanywestcentral.logic.azure.com/workflows/2cfc9cc8144e474fa2a05f6e5fd8fa1f/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media/%7BeventId%7D/%7Bid%7D?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=qeXOun5tVlYx_7dId7v31DXf-Phd_M2EIxy2iqI1W8M",
   READ_SAS_ENDPOINT:"https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateReadSas",
   STATS_ENDPOINT:   "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GetMediaStats",
-  VALIDATE_ENDPOINT:"https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/ValidateUpload",
   ADMIN_SECRET:     "EVENTSNAP2026",
 };
+
+// ══════════════════════════════════
+//  THEME
+// ══════════════════════════════════
+function toggleTheme(){
+  const isLight=document.documentElement.classList.toggle('light');
+  localStorage.setItem('es_theme', isLight?'light':'dark');
+}
+(function(){
+  if(localStorage.getItem('es_theme')==='light') document.documentElement.classList.add('light');
+})();
 
 // ══════════════════════════════════
 //  AUTH STATE
@@ -973,15 +947,14 @@ function doSignup() {
   if(pass.length<4){ authErr('Password must be at least 4 characters.'); return; }
   if(selectedRole==='admin'){
     const key=document.getElementById('s-adminkey').value.trim();
-    if(key!==CONFIG.ADMIN_SECRET){ authErr('Invalid Admin secret code.'); return; }
+    if(key!==CONFIG.ADMIN_SECRET){ authErr('Invalid admin secret code.'); return; }
   }
   const users=getUsers();
   const exists=Object.keys(users).find(k=>users[k].email===email);
   if(exists){ authErr('Email already registered. Please log in instead.'); return; }
-  const username=email;
-  users[username]={name, email, password:btoa(pass), role:selectedRole};
+  users[email]={name, email, password:btoa(pass), role:selectedRole};
   saveUsers(users);
-  startSession(username, name, email, selectedRole);
+  startSession(email, name, email, selectedRole);
 }
 
 function startSession(username, name, email, role) {
@@ -989,7 +962,6 @@ function startSession(username, name, email, role) {
   localStorage.setItem('es_session', JSON.stringify(currentUser));
   document.getElementById('auth-modal').classList.remove('open');
 
-  // Nav
   document.getElementById('nav-logged-out').style.display='none';
   document.getElementById('nav-logged-in').style.display='flex';
   const initials=name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
@@ -999,16 +971,13 @@ function startSession(username, name, email, role) {
   tag.textContent=role==='admin'?'Admin':'Guest';
   tag.className='role-badge '+(role==='admin'?'admin':'guest');
 
-  // Show admin/profile tabs
   document.querySelectorAll('.admin-only').forEach(el=>el.style.display=role==='admin'?'flex':'none');
   document.getElementById('ntab-profile').style.display='flex';
 
-  // Upload page
   document.getElementById('upload-locked').style.display='none';
   document.getElementById('upload-form').style.display='block';
   document.getElementById('up-uploader').value=name;
 
-  // Profile page
   updateProfilePage();
   loadGallery();
 }
@@ -1032,19 +1001,18 @@ function updateProfilePage() {
   const initials=u.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
   document.getElementById('profile-avatar-initials').textContent=initials;
   document.getElementById('profile-name').textContent=u.name;
-  document.getElementById('profile-email-text').textContent=u.email||'—';
+  document.getElementById('profile-email-text').textContent=u.email||'Not set';
   document.getElementById('profile-info-name').textContent=u.name;
-  document.getElementById('profile-info-email').textContent=u.email||'—';
+  document.getElementById('profile-info-email').textContent=u.email||'Not set';
   document.getElementById('profile-info-role').textContent=u.role==='admin'?'Administrator':'Guest';
   const rb=document.getElementById('profile-role-badge');
   rb.textContent=u.role==='admin'?'Admin':'Guest';
   rb.className='role-badge '+(u.role==='admin'?'admin':'guest');
-  // Count user's uploads from allMedia
   loadProfileStats();
 }
 
 function loadProfileStats() {
-  if(!currentUser||!allMedia.length){ setProfileCounts(0,0,0,0); return; }
+  if(!currentUser){ setProfileCounts(0,0,0,0); return; }
   const mine=allMedia.filter(m=>m.uploaderName===currentUser.name||m.uploaderEmail===currentUser.email);
   const images=mine.filter(m=>m.mediaType==='image'||(m.fileName&&!/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName))).length;
   const videos=mine.length-images;
@@ -1063,17 +1031,21 @@ function setProfileCounts(total,img,vid,ev){
 function renderProfileUploads(items){
   const c=document.getElementById('profile-uploads-container');
   if(!items.length){
-    c.innerHTML='<div class="profile-activity-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>You haven\'t uploaded any media yet.</p></div>';
+    c.innerHTML='<div class="profile-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>No uploads yet.</p></div>';
     return;
   }
-  c.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem">'+
+  c.innerHTML='<div class="profile-uploads-grid">'+
     items.map(m=>{
       const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
-      return `<div style="background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-        <div style="height:120px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--text-dim)">${isVid?'▶':'🖼'}</div>
-        <div style="padding:10px 12px">
-          <div style="font-size:0.85rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.title||'Untitled')}</div>
-          <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px">${esc(m.eventName||m.eventId||'')}</div>
+      return `<div class="profile-upload-item">
+        <div class="profile-upload-thumb">
+          ${isVid
+            ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'
+            :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'}
+        </div>
+        <div class="profile-upload-info">
+          <div class="profile-upload-title">${esc(m.title||'Untitled')}</div>
+          <div class="profile-upload-event">${esc(m.eventName||m.eventId||'')}</div>
         </div>
       </div>`;
     }).join('')+'</div>';
@@ -1097,7 +1069,7 @@ window.addEventListener('DOMContentLoaded', ()=>{
 // ══════════════════════════════════
 function showPage(name, el) {
   if((name==='upload'||name==='manage')&&!currentUser){ openAuthModal('login'); return; }
-  if(name==='manage'&&currentUser&&currentUser.role!=='admin'){ alert('Only Admins can access the Manage page.'); return; }
+  if(name==='manage'&&currentUser&&currentUser.role!=='admin'){ alert('Only admins can access the Manage page.'); return; }
   if(name==='profile'&&!currentUser){ openAuthModal('login'); return; }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-pill').forEach(t=>t.classList.remove('active'));
@@ -1119,7 +1091,7 @@ document.getElementById('file-input').addEventListener('change',e=>{if(e.target.
 
 function setFile(f){
   selectedFile=f;
-  document.getElementById('file-name-display').textContent=f.name+' ('+(f.size/1024).toFixed(1)+' KB)';
+  document.getElementById('file-name-display').textContent=f.name+' ('+formatSize(f.size)+')';
   document.getElementById('file-preview').style.display='flex';
   document.getElementById('dropzone').style.display='none';
 }
@@ -1128,6 +1100,10 @@ function clearFile(){
   document.getElementById('file-input').value='';
   document.getElementById('file-preview').style.display='none';
   document.getElementById('dropzone').style.display='block';
+}
+function formatSize(bytes){
+  if(bytes>=1024*1024) return (bytes/1024/1024).toFixed(1)+' MB';
+  return (bytes/1024).toFixed(0)+' KB';
 }
 
 // ══════════════════════════════════
@@ -1163,16 +1139,16 @@ async function handleUpload(){
   setLoading('up-btn',true);
   try{
     const sasRes=await fetch(CONFIG.SAS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:selectedFile.name,eventId,fileSize:selectedFile.size})});
-    if(!sasRes.ok){const err=await sasRes.json();throw new Error(err.error||'SAS token request failed ('+sasRes.status+')');}
+    if(!sasRes.ok){const err=await sasRes.json();throw new Error(err.error||'Upload request failed ('+sasRes.status+')');}
     const{uploadUrl,blobUrl}=await sasRes.json();
     const upRes=await fetch(uploadUrl,{method:'PUT',headers:{'x-ms-blob-type':'BlockBlob','Content-Type':selectedFile.type},body:selectedFile});
-    if(!upRes.ok) throw new Error('Blob upload failed ('+upRes.status+')');
+    if(!upRes.ok) throw new Error('Upload failed ('+upRes.status+')');
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
         uploaderName:uploader||currentUser.name,uploaderEmail:currentUser.email||'',
         fileName:selectedFile.name,blobUrl,mediaType:isVideo?'video':'image',
         uploadDate:new Date().toISOString(),ttl:31536000})});
-    if(!metaRes.ok) throw new Error('Metadata save failed ('+metaRes.status+')');
+    if(!metaRes.ok) throw new Error('Save failed ('+metaRes.status+')');
     showAlert('up-success');clearFile();
     ['up-eventId','up-eventName','up-title','up-desc'].forEach(id=>{document.getElementById(id).value='';});
   }catch(err){showErr('up-error',err.message);}
@@ -1187,17 +1163,17 @@ let allMedia=[];
 async function loadGallery(){
   const c=document.getElementById('gallery-container');
   hideAlert('gallery-error');
-  c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="animation:spin 1.2s linear infinite"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p style="margin-top:1rem;color:var(--text-muted)">Loading from Cosmos DB...</p></div>';
+  c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="animation:spin 1.2s linear infinite"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p style="margin-top:1rem;color:var(--text-muted)">Loading...</p></div>';
   try{
     const res=await fetch(CONFIG.GETALL_ENDPOINT,{method:'GET'});
-    if(!res.ok) throw new Error('GET failed ('+res.status+')');
+    if(!res.ok) throw new Error('Failed to load ('+res.status+')');
     const data=await res.json();
     allMedia=Array.isArray(data)?data:(data.value||data.Documents||[]);
     updateStats();
     renderGallery(allMedia,'gallery-container',true);
   }catch(err){
     showErr('gallery-error',err.message);
-    c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><h3>Load Failed</h3><p>Check the Logic App endpoint.</p></div>';
+    c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><h3>Load Failed</h3><p>Check your connection and try again.</p></div>';
   }
 }
 
@@ -1217,19 +1193,15 @@ function renderGallery(items,containerId,showAdmin){
     const uid=containerId+i;
     const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
     const editBtn=isAdmin&&showAdmin?`<button class="btn btn-ghost btn-sm" onclick="gotoManage('${esc(m.id)}','${esc(m.eventId)}')">Edit</button>`:'';
-    const thumbSvg=isVid
-      ?`<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`
-      :`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+    const thumbIcon=isVid
+      ?'<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'
+      :'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
     return `<div class="media-card">
-      <div class="media-thumb" id="thumb-${uid}">${thumbSvg}<span class="media-type-badge ${isVid?'video':'image'}">${isVid?'Video':'Photo'}</span></div>
+      <div class="media-thumb" id="thumb-${uid}">${thumbIcon}<span class="media-type-tag ${isVid?'video':'image'}">${isVid?'Video':'Photo'}</span></div>
       <div class="media-body">
         <div class="media-title">${esc(m.title||'Untitled')}</div>
         <div><span class="media-event-tag">${esc(m.eventName||m.eventId||'')}</span></div>
-        <div class="media-meta-row">
-          <span>${esc(m.uploaderName||'Unknown')}</span>
-          <span class="media-meta-dot"></span>
-          <span>${m.uploadDate?new Date(m.uploadDate).toLocaleDateString():''}</span>
-        </div>
+        <div class="media-meta-row">${esc(m.uploaderName||'Unknown')} &nbsp; ${m.uploadDate?new Date(m.uploadDate).toLocaleDateString():''}</div>
         ${m.description?`<div style="font-size:0.78rem;color:var(--text-muted);font-style:italic;margin-bottom:8px">${esc(m.description)}</div>`:''}
         <div class="media-actions">
           <button class="btn btn-ghost btn-sm" id="vbtn-${uid}">View</button>
@@ -1258,10 +1230,10 @@ async function loadThumb(m,uid){
     if(!res.ok) throw new Error();
     const{readUrl}=await res.json();
     if(!readUrl) throw new Error();
-    const badge=thumbEl.querySelector('.media-type-badge');
+    const badge=thumbEl.querySelector('.media-type-tag');
     thumbEl.innerHTML=isVid
       ?`<video src="${readUrl}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>`
-      :`<img src="${readUrl}" alt="${esc(m.title||'')}" onerror="this.parentElement.innerHTML=''" loading="lazy" style="width:100%;height:100%;object-fit:cover"/>`;
+      :`<img src="${readUrl}" alt="${esc(m.title||'')}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`;
     if(badge) thumbEl.appendChild(badge);
     if(viewBtn) viewBtn.onclick=()=>window.open(readUrl,'_blank');
   }catch(e){if(viewBtn) viewBtn.onclick=()=>window.open(m.blobUrl||'','_blank');}
@@ -1293,16 +1265,16 @@ async function handleJoinEvent(){
   document.getElementById('join-result').style.display='none';
   try{
     const res=await fetch(CONFIG.GETALL_ENDPOINT,{method:'GET'});
-    if(!res.ok) throw new Error('Failed to fetch ('+res.status+')');
+    if(!res.ok) throw new Error('Request failed ('+res.status+')');
     const data=await res.json();
     const all=Array.isArray(data)?data:(data.value||data.Documents||[]);
     const filtered=all.filter(m=>m.eventId===eventId);
-    if(!filtered.length) throw new Error('No media found for Event ID: "'+eventId+'".');
+    if(!filtered.length) throw new Error('No media found for that Event ID. Please check and try again.');
     const eventName=filtered[0].eventName||eventId;
     document.getElementById('join-event-name').textContent=eventName;
-    document.getElementById('join-event-sub').textContent=filtered.length+' media item'+(filtered.length!==1?'s':'')+' found';
+    document.getElementById('join-event-sub').textContent=filtered.length+' item'+(filtered.length!==1?'s':'')+' found';
     document.getElementById('join-result').style.display='block';
-    showAlert('join-info','Joined "'+eventName+'" — '+filtered.length+' item(s) found.');
+    showAlert('join-info','Joined "'+eventName+'" with '+filtered.length+' item'+(filtered.length!==1?'s':'')+'.');
     renderGallery(filtered,'join-gallery',false);
   }catch(err){showErr('join-error',err.message);}
   setLoading('join-btn',false);
@@ -1314,7 +1286,7 @@ async function handleJoinEvent(){
 let currentMediaId=null,currentEventId=null;
 
 function gotoManage(id,eventId){
-  if(!currentUser||currentUser.role!=='admin'){alert('Only Admins can manage media.');return;}
+  if(!currentUser||currentUser.role!=='admin'){alert('Only admins can manage media.');return;}
   document.getElementById('mg-id').value=id;
   document.getElementById('mg-eventId').value=eventId;
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -1335,7 +1307,7 @@ async function findMedia(){
     const data=await res.json();
     const items=Array.isArray(data)?data:(data.value||data.Documents||[]);
     const found=items.find(m=>m.id===id);
-    if(!found) throw new Error('Media not found with ID: '+id);
+    if(!found) throw new Error('No media found with that ID.');
     populateForm(found);
   }catch(err){showErr('mg-find-error',err.message);document.getElementById('mg-result-card').style.display='none';}
 }
@@ -1359,14 +1331,14 @@ async function handleUpdate(){
     const url=CONFIG.UPDATE_ENDPOINT.replace('%7Bid%7D',currentMediaId).replace('{id}',currentMediaId);
     const res=await fetch(url,{method:'PUT',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:currentMediaId,eventId:currentEventId,eventName:v('mg-eventName'),title:v('mg-title'),description:v('mg-desc'),uploaderName:v('mg-uploader')})});
-    if(!res.ok) throw new Error('Update failed ('+res.status+')');
-    showAlert('mg-success','Record updated successfully in Cosmos DB!');
+    if(!res.ok) throw new Error('Save failed ('+res.status+')');
+    showAlert('mg-success','Saved successfully!');
   }catch(err){showErr('mg-error',err.message);}
   setLoading('mg-save-btn',false);
 }
 
 function confirmDelete(){
-  if(!currentUser||currentUser.role!=='admin'){alert('Only Admins can delete media.');return;}
+  if(!currentUser||currentUser.role!=='admin'){alert('Only admins can delete media.');return;}
   document.getElementById('del-modal').classList.add('open');
 }
 function closeDelModal(){document.getElementById('del-modal').classList.remove('open');}
@@ -1383,7 +1355,7 @@ async function handleDelete(){
     closeDelModal();
     document.getElementById('mg-result-card').style.display='none';
     document.getElementById('mg-id').value=''; document.getElementById('mg-eventId').value='';
-    showAlert('mg-success','Media deleted from Cosmos DB and Blob Storage.');
+    showAlert('mg-success','Deleted successfully.');
     allMedia=allMedia.filter(m=>m.id!==currentMediaId);
     currentMediaId=null; currentEventId=null;
   }catch(err){closeDelModal();showErr('mg-error',err.message);}
