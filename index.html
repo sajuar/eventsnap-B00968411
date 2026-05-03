@@ -1275,6 +1275,27 @@ async function handleUpload(){
 }
 
 // ══════════════════════════════════
+//  SAS URL CACHE
+// ══════════════════════════════════
+const sasCache = new Map(); // key: "eventId/fileName" → { url, expires }
+
+async function getReadUrl(fileName, eventId) {
+  const key = eventId + '/' + fileName;
+  const cached = sasCache.get(key);
+  if (cached && Date.now() < cached.expires) return cached.url;
+  const res = await fetch(CONFIG.READ_SAS_ENDPOINT, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({fileName, eventId})
+  });
+  if (!res.ok) throw new Error();
+  const {readUrl} = await res.json();
+  if (!readUrl) throw new Error();
+  // Cache for 45 minutes (SAS tokens are typically valid for 1 hour)
+  sasCache.set(key, {url: readUrl, expires: Date.now() + 45 * 60 * 1000});
+  return readUrl;
+}
+
+// ══════════════════════════════════
 //  GALLERY
 // ══════════════════════════════════
 let allMedia=[];
@@ -1331,10 +1352,11 @@ function renderGallery(items,containerId,showAdmin){
     </div>`;
   }).join('')+'</div>';
 
+  // Load all thumbnails in parallel batches of 6
   (async()=>{
-    for(let i=0;i<items.length;i++){
-      await loadThumb(items[i],containerId+i);
-      await new Promise(r=>setTimeout(r,200));
+    const BATCH = 6;
+    for(let i=0;i<items.length;i+=BATCH){
+      await Promise.all(items.slice(i,i+BATCH).map((m,j)=>loadThumb(m,containerId+(i+j))));
     }
   })();
 }
@@ -1345,14 +1367,11 @@ async function loadThumb(m,uid){
   if(!thumbEl||!m.fileName||!m.eventId) return;
   const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
   try{
-    const res=await fetch(CONFIG.READ_SAS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:m.fileName,eventId:m.eventId})});
-    if(!res.ok) throw new Error();
-    const{readUrl}=await res.json();
-    if(!readUrl) throw new Error();
+    const readUrl=await getReadUrl(m.fileName,m.eventId);
     const badge=thumbEl.querySelector('.media-type-tag');
     thumbEl.innerHTML=isVid
       ?`<video src="${readUrl}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>`
-      :`<img src="${readUrl}" alt="${esc(m.title||'')}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`;
+      :`<img src="${readUrl}" alt="${esc(m.title||'')}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`;
     if(badge) thumbEl.appendChild(badge);
     if(viewBtn) viewBtn.onclick=()=>window.open(readUrl,'_blank');
   }catch(e){if(viewBtn) viewBtn.onclick=()=>window.open(m.blobUrl||'','_blank');}
@@ -1364,9 +1383,7 @@ async function loadThumb(m,uid){
 async function downloadMedia(fileName,eventId,title){
   if(!fileName||!eventId) return;
   try{
-    const res=await fetch(CONFIG.READ_SAS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName,eventId})});
-    if(!res.ok) throw new Error();
-    const{readUrl}=await res.json();
+    const readUrl=await getReadUrl(fileName,eventId);
     const a=document.createElement('a');
     a.href=readUrl; a.download=title+'.'+fileName.split('.').pop();
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
