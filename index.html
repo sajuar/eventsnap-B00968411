@@ -393,6 +393,26 @@ textarea{resize:vertical;min-height:80px;}
 /* ══════════════════════════════════
    PROFILE PAGE
 ══════════════════════════════════ */
+/* ── UPLOAD SUCCESS MODAL ── */
+.success-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;
+  padding:2.5rem 2rem;width:90%;max-width:400px;text-align:center;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
+.success-modal::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--green),#34d399);}
+.success-icon-ring{width:80px;height:80px;border-radius:50%;background:rgba(16,185,129,0.1);
+  border:2px solid rgba(16,185,129,0.25);display:flex;align-items:center;justify-content:center;
+  margin:0 auto 1.5rem;animation:pop-in 0.4s var(--ease) both;}
+@keyframes pop-in{0%{transform:scale(0.5);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.success-icon-ring svg{width:38px;height:38px;stroke:#10b981;fill:none;stroke-width:2.5;
+  stroke-linecap:round;stroke-linejoin:round;animation:draw-check 0.4s 0.2s ease both;}
+@keyframes draw-check{0%{stroke-dasharray:0 100;opacity:0;}100%{stroke-dasharray:100 0;opacity:1;}}
+.success-modal h2{font-family:var(--font-head);font-size:2rem;letter-spacing:1px;color:var(--text);margin-bottom:8px;}
+.success-modal p{font-size:0.9rem;color:var(--text-muted);line-height:1.6;margin-bottom:1.75rem;}
+.success-modal-info{display:flex;flex-direction:column;gap:6px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:1.75rem;text-align:left;}
+.success-modal-info-row{display:flex;justify-content:space-between;font-size:0.82rem;}
+.success-modal-info-row span:first-child{color:var(--text-muted);}
+.success-modal-info-row span:last-child{color:var(--text);font-weight:600;}
+
 #page-profile{min-height:100vh;}
 .profile-banner{height:200px;position:relative;overflow:hidden;
   background:linear-gradient(135deg,var(--bg) 0%,rgba(225,29,72,0.12) 50%,rgba(37,99,235,0.08) 100%);}
@@ -542,6 +562,22 @@ textarea{resize:vertical;min-height:80px;}
         <div class="spinner"></div><span class="btn-text">Delete Permanently</span>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- ══ UPLOAD SUCCESS MODAL ══ -->
+<div class="modal-overlay" id="upload-success-modal">
+  <div class="success-modal">
+    <div class="success-icon-ring">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>Upload Successful!</h2>
+    <p>Your media has been uploaded and is now available in the gallery.</p>
+    <div class="success-modal-info" id="success-modal-info"></div>
+    <button class="btn btn-success btn-full" onclick="closeUploadSuccess()">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      Done
+    </button>
   </div>
 </div>
 
@@ -784,7 +820,6 @@ textarea{resize:vertical;min-height:80px;}
       </div>
       <div class="form-group"><label>Description</label><textarea id="up-desc" placeholder="Optional description"></textarea></div>
 
-      <div class="alert alert-success" id="up-success">Uploaded successfully!</div>
       <div class="alert alert-error" id="up-error"></div>
       <button class="btn btn-primary btn-full" id="up-btn" onclick="handleUpload()">
         <div class="spinner"></div>
@@ -1268,8 +1303,14 @@ async function handleUpload(){
         fileName:selectedFile.name,blobUrl,mediaType:isVideo?'video':'image',
         uploadDate:new Date().toISOString(),ttl:31536000})});
     if(!metaRes.ok) throw new Error('Save failed ('+metaRes.status+')');
-    showAlert('up-success');clearFile();
+    clearFile();
     ['up-eventId','up-eventName','up-title','up-desc'].forEach(id=>{document.getElementById(id).value='';});
+    document.getElementById('success-modal-info').innerHTML=
+      `<div class="success-modal-info-row"><span>Event</span><span>${esc(eventName)}</span></div>`+
+      `<div class="success-modal-info-row"><span>Title</span><span>${esc(title)}</span></div>`+
+      `<div class="success-modal-info-row"><span>Type</span><span>${isVideo?'Video':'Image'}</span></div>`;
+    document.getElementById('upload-success-modal').classList.add('open');
+    sasCache.clear(); // clear cache so gallery shows the new upload on next visit
   }catch(err){showErr('up-error',err.message);}
   setLoading('up-btn',false);
 }
@@ -1308,7 +1349,8 @@ async function loadGallery(){
     const res=await fetch(CONFIG.GETALL_ENDPOINT,{method:'GET'});
     if(!res.ok) throw new Error('Failed to load ('+res.status+')');
     const data=await res.json();
-    allMedia=Array.isArray(data)?data:(data.value||data.Documents||[]);
+    allMedia=(Array.isArray(data)?data:(data.value||data.Documents||[]))
+      .sort((a,b)=>new Date(b.uploadDate||0)-new Date(a.uploadDate||0));
     updateStats();
     renderGallery(allMedia,'gallery-container',true);
   }catch(err){
@@ -1471,6 +1513,11 @@ async function handleUpdate(){
     showAlert('mg-success','Saved successfully!');
   }catch(err){showErr('mg-error',err.message);}
   setLoading('mg-save-btn',false);
+}
+
+function closeUploadSuccess(){
+  document.getElementById('upload-success-modal').classList.remove('open');
+  showPage('gallery', document.getElementById('ntab-gallery'));
 }
 
 function confirmDelete(){
