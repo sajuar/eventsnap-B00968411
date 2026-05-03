@@ -191,12 +191,10 @@ textarea{resize:vertical;min-height:80px;}
 .form-group{margin-bottom:1rem;}
 
 /* ══════════════════════════════════
-   GALLERY PAGE
+   HOME PAGE
 ══════════════════════════════════ */
-#page-gallery{min-height:100vh;}
-
-/* Welcome / homepage hero */
-.home-hero{padding:5rem 2.5rem 4rem;position:relative;overflow:hidden;text-align:center;
+#page-home{min-height:100vh;}
+.home-hero{padding:5rem 2.5rem 3.5rem;position:relative;overflow:hidden;text-align:center;
   background:linear-gradient(180deg,rgba(225,29,72,0.06) 0%,rgba(37,99,235,0.03) 60%,transparent 100%);}
 .home-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(225,29,72,0.5),transparent);}
@@ -208,7 +206,7 @@ textarea{resize:vertical;min-height:80px;}
 .home-hero h1 span{color:var(--rose);}
 .home-hero-desc{color:var(--text-muted);font-size:1.05rem;max-width:520px;margin:0 auto 2.5rem;line-height:1.7;}
 .home-hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.home-features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:0 2.5rem 3rem;max-width:860px;margin:0 auto;}
+.home-features{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:0 2.5rem 2.5rem;max-width:960px;margin:0 auto;}
 .home-feature{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:12px;}
 .home-feature-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -216,11 +214,34 @@ textarea{resize:vertical;min-height:80px;}
 .home-feature-icon.rose{background:rgba(225,29,72,0.12);} .home-feature-icon.rose svg{stroke:var(--rose-light);}
 .home-feature-icon.blue{background:rgba(37,99,235,0.12);} .home-feature-icon.blue svg{stroke:var(--blue-light);}
 .home-feature-icon.purple{background:rgba(124,58,237,0.12);} .home-feature-icon.purple svg{stroke:var(--purple-light);}
+.home-feature-icon.green{background:rgba(16,185,129,0.12);} .home-feature-icon.green svg{stroke:#6ee7b7;}
 .home-feature h4{font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:3px;}
 .home-feature p{font-size:0.78rem;color:var(--text-muted);line-height:1.5;}
-.gallery-section-title{padding:0 2.5rem 1rem;display:flex;align-items:center;gap:16px;}
-.gallery-section-title h2{font-family:var(--font-head);font-size:1.6rem;letter-spacing:1px;color:var(--text);}
-.gallery-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+/* How to use section */
+.how-to-use{max-width:960px;margin:0 auto;padding:0 2.5rem 4rem;}
+.how-to-use-title{font-family:var(--font-head);font-size:2rem;letter-spacing:1px;margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:16px;}
+.how-to-use-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.step-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem 1.25rem;position:relative;overflow:hidden;}
+.step-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.step-card:nth-child(1)::before{background:var(--rose);}
+.step-card:nth-child(2)::before{background:var(--blue);}
+.step-card:nth-child(3)::before{background:var(--purple);}
+.step-card:nth-child(4)::before{background:var(--green);}
+.step-num{font-family:var(--font-head);font-size:2.5rem;line-height:1;color:var(--border2);margin-bottom:0.75rem;}
+.step-card h4{font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:6px;}
+.step-card p{font-size:0.8rem;color:var(--text-muted);line-height:1.6;}
+
+/* ══════════════════════════════════
+   GALLERY PAGE
+══════════════════════════════════ */
+#page-gallery{min-height:100vh;}
+.gallery-page-header{padding:2.5rem 2.5rem 1.5rem;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,rgba(225,29,72,0.04) 0%,transparent 100%);}
+.gallery-page-header h1{font-family:var(--font-head);font-size:2.5rem;letter-spacing:2px;color:var(--text);}
+.gallery-page-header h1 span{color:var(--rose);}
+.gallery-page-header p{color:var(--text-muted);font-size:0.9rem;margin-top:4px;}
 
 /* Gallery hero label (kept for other uses) */
 .gallery-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
@@ -246,6 +267,7 @@ textarea{resize:vertical;min-height:80px;}
 .search-wrap input{padding-left:42px;border-radius:99px;}
 
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;padding:0 2.5rem 3rem;}
+#join-gallery .media-grid{grid-template-columns:repeat(2,1fr);padding:0;max-width:860px;}
 .media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   overflow:hidden;transition:all 0.25s var(--ease);}
 .media-card:hover{border-color:rgba(225,29,72,0.25);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.3);}
@@ -417,15 +439,20 @@ textarea{resize:vertical;min-height:80px;}
   .profile-banner{height:140px;}
   .profile-header{margin-top:-40px;}
 }
+@media(max-width:900px){
+  .steps-grid{grid-template-columns:repeat(2,1fr);}
+}
 @media(max-width:768px){
   .home-features{grid-template-columns:1fr;}
   .home-hero{padding:3.5rem 1.5rem 3rem;}
+  #join-gallery .media-grid{grid-template-columns:1fr;}
 }
 @media(max-width:640px){
   .stats-grid{grid-template-columns:repeat(2,1fr);padding:0 1.25rem 1.5rem;}
   .gallery-hero,.upload-hero,.manage-hero,.join-hero,.home-hero{padding-left:1.25rem;padding-right:1.25rem;}
-  .home-features{padding:0 1.25rem 2rem;}
-  .gallery-section-title{padding:0 1.25rem 1rem;}
+  .home-features,.how-to-use{padding-left:1.25rem;padding-right:1.25rem;}
+  .steps-grid{grid-template-columns:1fr;}
+  .gallery-page-header{padding:1.5rem 1.25rem 1rem;}
   .gallery-toolbar,.media-grid,.manage-body,.join-body,.profile-body,.profile-header,.upload-form-wrap{padding-left:1.25rem;padding-right:1.25rem;}
   .form-row{grid-template-columns:1fr;}
   .nav-pills{display:none;}
@@ -520,7 +547,7 @@ textarea{resize:vertical;min-height:80px;}
 
 <!-- ══ NAVBAR ══ -->
 <nav>
-  <a class="nav-brand" onclick="showPage('gallery',null);return false;" href="#">
+  <a class="nav-brand" onclick="showPage('home',null);return false;" href="#">
     <svg class="nav-logo" viewBox="0 0 38 38" fill="none">
       <circle cx="19" cy="19" r="17" fill="rgba(225,29,72,0.12)"/>
       <circle cx="19" cy="19" r="4.5" fill="#E11D48"/>
@@ -537,7 +564,7 @@ textarea{resize:vertical;min-height:80px;}
   </a>
 
   <div class="nav-pills" id="nav-tabs">
-    <button class="nav-pill active" id="ntab-gallery" onclick="showPage('gallery',this)">
+    <button class="nav-pill" id="ntab-gallery" onclick="showPage('gallery',this)">
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Gallery
     </button>
@@ -578,23 +605,21 @@ textarea{resize:vertical;min-height:80px;}
 </nav>
 
 <!-- ══════════════════════════════════
-     GALLERY PAGE
+     HOME PAGE
 ══════════════════════════════════ -->
-<div class="page active" id="page-gallery">
-
-  <!-- Homepage welcome section -->
+<div class="page active" id="page-home">
   <div class="home-hero">
     <div class="home-hero-badge">Welcome to EventSnap</div>
     <h1>CAPTURE EVERY<br><span>MOMENT</span></h1>
     <p class="home-hero-desc">EventSnap is your all-in-one platform for collecting, sharing and reliving photos and videos from any event. Upload once, access anywhere.</p>
     <div class="home-hero-ctas">
-      <button class="btn btn-primary" onclick="showPage('upload',document.getElementById('ntab-upload'))">
+      <button class="btn btn-primary" onclick="showPage('gallery',document.getElementById('ntab-gallery'))">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Browse Gallery
+      </button>
+      <button class="btn btn-ghost" onclick="showPage('upload',document.getElementById('ntab-upload'))">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         Upload Media
-      </button>
-      <button class="btn btn-ghost" onclick="showPage('join',document.getElementById('ntab-join'))">
-        <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        Join an Event
       </button>
     </div>
   </div>
@@ -604,32 +629,57 @@ textarea{resize:vertical;min-height:80px;}
       <div class="home-feature-icon rose">
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
       </div>
-      <div>
-        <h4>Photos and Videos</h4>
-        <p>Upload and browse images and videos from any event in one place.</p>
-      </div>
+      <div><h4>Photos and Videos</h4><p>Upload and browse images and videos from any event in one place.</p></div>
     </div>
     <div class="home-feature">
       <div class="home-feature-icon blue">
         <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       </div>
-      <div>
-        <h4>Join Any Event</h4>
-        <p>Enter an Event ID to instantly see all media shared for that event.</p>
-      </div>
+      <div><h4>Join Any Event</h4><p>Enter an Event ID to instantly see all media shared for that event.</p></div>
     </div>
     <div class="home-feature">
-      <div class="home-feature-icon purple">
+      <div class="home-feature-icon green">
         <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <div>
-        <h4>Secure and Private</h4>
-        <p>Your media is protected. Only people with the Event ID can access it.</p>
-      </div>
+      <div><h4>Secure Access</h4><p>Only people with the Event ID can view and download that event's media.</p></div>
     </div>
   </div>
 
-  <div class="gallery-section-title"><h2>Media Gallery</h2></div>
+  <div class="how-to-use">
+    <div class="how-to-use-title">How It Works</div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h4>Create an Account</h4>
+        <p>Sign up with your email and choose a role. Guests can upload and view. Admins get full management access.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h4>Upload Your Media</h4>
+        <p>Go to the Upload tab, enter your Event ID and Event Name, then drag and drop your photos or videos.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h4>Share the Event ID</h4>
+        <p>Give your Event ID to anyone you want to invite. They use the Join Event tab to find and view all media for that event.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <h4>Browse and Download</h4>
+        <p>View the full gallery, search by event name or title, and download any photo or video at any time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     GALLERY PAGE
+══════════════════════════════════ -->
+<div class="page" id="page-gallery">
+  <div class="gallery-page-header">
+    <h1>MEDIA <span>GALLERY</span></h1>
+    <p>All photos and videos across every event</p>
+  </div>
 
   <div class="stats-grid" id="stats-bar" style="display:none">
     <div class="stat-tile">
@@ -1047,7 +1097,8 @@ function startSession(username, name, email, role) {
   document.getElementById('up-uploader').value=name;
 
   updateProfilePage();
-  loadGallery();
+  showPage('home', null);
+  loadGallery(); // preload in background
 }
 
 function doLogout() {
@@ -1059,7 +1110,7 @@ function doLogout() {
   document.getElementById('ntab-profile').style.display='none';
   document.getElementById('upload-locked').style.display='block';
   document.getElementById('upload-form').style.display='none';
-  showPage('gallery', null);
+  showPage('home', null);
   setTimeout(()=>openAuthModal('login'), 800);
 }
 
@@ -1127,7 +1178,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
   } else {
     document.getElementById('upload-locked').style.display='block';
     document.getElementById('upload-form').style.display='none';
-    loadGallery();
     setTimeout(()=>openAuthModal('login'), 2000);
   }
 });
@@ -1145,6 +1195,7 @@ function showPage(name, el) {
   if(el) el.classList.add('active');
   if(name==='gallery') loadGallery();
   if(name==='profile') updateProfilePage();
+  window.scrollTo(0,0);
 }
 
 // ══════════════════════════════════
