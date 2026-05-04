@@ -1722,7 +1722,6 @@ async function handleUpload(){
       `<div class="success-modal-info-row"><span>Type</span><span>${isVideo?'Video':'Image'}</span></div>`;
     document.getElementById('upload-success-modal').classList.add('open');
     sasCache.clear();
-    toast('Upload successful — "'+title+'" is now in the gallery!','success');
   }catch(err){showErr('up-error',err.message);setProgress(null,null);toast(err.message,'error');}
   setLoading('up-btn',false);
 }
