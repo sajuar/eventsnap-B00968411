@@ -289,6 +289,76 @@ textarea{resize:vertical;min-height:80px;}
 .empty-state svg{width:64px;height:64px;stroke:var(--text-dim);fill:none;stroke-width:1.2;margin:0 auto 1.5rem;display:block;}
 .empty-state h3{font-family:var(--font-head);font-size:1.8rem;letter-spacing:1px;color:var(--text);margin-bottom:8px;}
 
+/* ── SKELETON CARDS ── */
+@keyframes shimmer{0%{background-position:-400px 0;}100%{background-position:400px 0;}}
+.skeleton{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;animation:card-in 0.4s var(--ease) both;}
+.skeleton-thumb{width:100%;height:180px;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite;}
+.skeleton-body{padding:1rem 1.25rem 1.25rem;display:flex;flex-direction:column;gap:10px;}
+.skeleton-line{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite;}
+.skeleton-line.short{width:60%;}
+.skeleton-line.xshort{width:40%;}
+.skeleton-actions{display:flex;gap:6px;margin-top:4px;}
+.skeleton-btn{height:30px;width:64px;border-radius:var(--radius-sm);background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite;}
+
+/* ── STAGGERED CARD ANIMATIONS ── */
+@keyframes card-in{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.media-card{animation:card-in 0.38s var(--ease) both;}
+
+/* ── THUMB FADE IN ── */
+@keyframes fade-in{from{opacity:0;}to{opacity:1;}}
+.media-thumb img,.media-thumb video{animation:fade-in 0.35s ease both;}
+
+/* ── LIGHTBOX ── */
+.lightbox{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);align-items:center;justify-content:center;cursor:zoom-out;}
+.lightbox.open{display:flex;}
+.lightbox-inner{position:relative;max-width:92vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:14px;}
+.lightbox-inner img,.lightbox-inner video{max-width:92vw;max-height:80vh;border-radius:12px;object-fit:contain;box-shadow:0 24px 80px rgba(0,0,0,0.8);}
+.lightbox-close{position:absolute;top:-46px;right:0;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;}
+.lightbox-close:hover{background:rgba(255,255,255,0.2);}
+.lightbox-caption{color:rgba(255,255,255,0.75);font-size:0.88rem;text-align:center;max-width:600px;padding:0 1rem;}
+.lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);display:flex;gap:0;pointer-events:none;}
+.lightbox-prev,.lightbox-next{pointer-events:all;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;position:fixed;}
+.lightbox-prev{left:1.5rem;}
+.lightbox-next{right:1.5rem;}
+.lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,0.22);}
+.lightbox-prev svg,.lightbox-next svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── TOAST NOTIFICATIONS ── */
+#toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:var(--radius-sm);
+  font-size:0.88rem;font-weight:500;min-width:260px;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  pointer-events:all;cursor:pointer;border:1px solid;
+  animation:toast-in 0.35s var(--ease) both;}
+@keyframes toast-in{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:translateX(0);}}
+@keyframes toast-out{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(24px);}}
+.toast.out{animation:toast-out 0.3s ease forwards;}
+.toast-success{background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25);color:#6ee7b7;}
+.toast-error{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.25);color:#fca5a5;}
+.toast-info{background:rgba(37,99,235,0.12);border-color:rgba(37,99,235,0.25);color:var(--blue-light);}
+.toast-icon{width:18px;height:18px;flex-shrink:0;}
+
+/* ── UPLOAD PROGRESS BAR ── */
+.progress-wrap{margin-top:12px;display:none;}
+.progress-label{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);margin-bottom:6px;}
+.progress-bar-bg{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;width:0%;transition:width 0.15s ease;}
+
+/* ── SORT CONTROLS ── */
+.sort-select{padding:8px 14px;border:1px solid var(--border);border-radius:99px;background:var(--surface);
+  color:var(--text);font-family:var(--font-body);font-size:0.82rem;font-weight:600;cursor:pointer;outline:none;
+  transition:all 0.2s;}
+.sort-select:focus{border-color:var(--rose);}
+.sort-select option{background:var(--bg2);color:var(--text);}
+
+/* ── EVENT COLOUR CHIPS ── */
+.event-chip-0{background:rgba(225,29,72,0.12);color:#fb7185;border-color:rgba(225,29,72,0.22);}
+.event-chip-1{background:rgba(37,99,235,0.12);color:#60a5fa;border-color:rgba(37,99,235,0.22);}
+.event-chip-2{background:rgba(124,58,237,0.12);color:#a78bfa;border-color:rgba(124,58,237,0.22);}
+.event-chip-3{background:rgba(16,185,129,0.12);color:#6ee7b7;border-color:rgba(16,185,129,0.22);}
+.event-chip-4{background:rgba(245,158,11,0.12);color:#fcd34d;border-color:rgba(245,158,11,0.22);}
+.event-chip-5{background:rgba(236,72,153,0.12);color:#f9a8d4;border-color:rgba(236,72,153,0.22);}
+.media-event-tag{border:1px solid;}
+
 /* ══════════════════════════════════
    UPLOAD PAGE
 ══════════════════════════════════ */
@@ -453,6 +523,119 @@ textarea{resize:vertical;min-height:80px;}
 .profile-empty{text-align:center;padding:2.5rem;color:var(--text-muted);}
 .profile-empty svg{width:40px;height:40px;stroke:var(--text-dim);fill:none;stroke-width:1.2;margin:0 auto 1rem;display:block;}
 
+/* ══════════════════════════════════
+   MONITORING PAGE
+══════════════════════════════════ */
+#page-monitor{min-height:100vh;}
+.monitor-hero{padding:3.5rem 2.5rem 2.5rem;background:linear-gradient(180deg,rgba(16,185,129,0.06) 0%,transparent 100%);
+  border-bottom:1px solid var(--border);position:relative;}
+.monitor-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(16,185,129,0.5),transparent);}
+.monitor-hero-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;
+  color:#6ee7b7;margin-bottom:0.75rem;}
+.monitor-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:2px;color:var(--text);}
+.monitor-hero h1 span{color:#6ee7b7;}
+.monitor-hero p{color:var(--text-muted);font-size:0.95rem;margin-top:6px;}
+.monitor-body{padding:2rem 2.5rem 4rem;max-width:1200px;}
+
+/* Live status bar */
+.monitor-status-bar{display:flex;align-items:center;gap:12px;padding:10px 18px;
+  background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.18);border-radius:99px;
+  margin-bottom:2rem;width:fit-content;}
+.status-dot{width:9px;height:9px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;animation:pulse-dot 2s ease infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 8px #10b981;}50%{opacity:0.6;box-shadow:0 0 16px #10b981;}}
+.monitor-status-bar span{font-size:0.82rem;font-weight:600;color:#6ee7b7;}
+.monitor-status-bar .refresh-btn{background:none;border:none;color:#6ee7b7;cursor:pointer;font-size:0.78rem;
+  font-family:var(--font-body);font-weight:600;padding:3px 10px;border-radius:99px;
+  border:1px solid rgba(16,185,129,0.25);transition:all 0.2s;margin-left:4px;}
+.monitor-status-bar .refresh-btn:hover{background:rgba(16,185,129,0.12);}
+
+/* KPI tiles */
+.monitor-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.kpi-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:1.5rem;position:relative;overflow:hidden;transition:all 0.25s var(--ease);}
+.kpi-tile:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--shadow);}
+.kpi-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-tile.green::before{background:linear-gradient(90deg,#10b981,#34d399);}
+.kpi-tile.blue::before{background:linear-gradient(90deg,var(--blue),var(--blue-light));}
+.kpi-tile.rose::before{background:linear-gradient(90deg,var(--rose),var(--rose-light));}
+.kpi-tile.purple::before{background:linear-gradient(90deg,var(--purple),var(--purple-light));}
+.kpi-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.kpi-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.kpi-tile.green .kpi-icon{background:rgba(16,185,129,0.12);color:#6ee7b7;}
+.kpi-tile.blue .kpi-icon{background:rgba(37,99,235,0.12);color:var(--blue-light);}
+.kpi-tile.rose .kpi-icon{background:rgba(225,29,72,0.12);color:var(--rose-light);}
+.kpi-tile.purple .kpi-icon{background:rgba(124,58,237,0.12);color:var(--purple-light);}
+.kpi-val{font-family:var(--font-head);font-size:2.4rem;line-height:1;color:var(--text);margin-bottom:4px;}
+.kpi-label{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);}
+.kpi-sub{font-size:0.75rem;color:var(--text-dim);margin-top:4px;}
+.kpi-loading{animation:shimmer 1.6s infinite;background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:800px 100%;border-radius:4px;height:2.4rem;width:80px;}
+
+/* Monitor panels */
+.monitor-panels{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
+.monitor-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.monitor-panel-full{grid-column:1/-1;}
+.monitor-panel-head{padding:1.1rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.monitor-panel-title{font-family:var(--font-head);font-size:1.1rem;letter-spacing:0.5px;
+  display:flex;align-items:center;gap:8px;}
+.monitor-panel-title svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+.monitor-panel-body{padding:1.25rem 1.5rem;}
+
+/* Trace log */
+.trace-log{display:flex;flex-direction:column;gap:6px;max-height:320px;overflow-y:auto;}
+.trace-row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;
+  padding:8px 10px;border-radius:var(--radius-xs);background:var(--surface2);font-size:0.78rem;font-family:monospace;}
+.trace-time{color:var(--text-dim);white-space:nowrap;}
+.trace-msg{color:var(--text);word-break:break-all;}
+.trace-badge{padding:2px 8px;border-radius:99px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
+.trace-badge.upload{background:rgba(37,99,235,0.15);color:var(--blue-light);}
+.trace-badge.read{background:rgba(124,58,237,0.15);color:var(--purple-light);}
+.trace-badge.stats{background:rgba(16,185,129,0.15);color:#6ee7b7;}
+.trace-badge.validate{background:rgba(245,158,11,0.15);color:#fcd34d;}
+.trace-badge.other{background:var(--surface2);color:var(--text-muted);}
+.trace-empty{text-align:center;padding:2rem;color:var(--text-muted);font-size:0.85rem;}
+
+/* Function health rows */
+.fn-health-list{display:flex;flex-direction:column;gap:8px;}
+.fn-health-row{display:flex;align-items:center;gap:12px;padding:10px 12px;
+  border-radius:var(--radius-xs);background:var(--surface2);}
+.fn-health-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.fn-health-dot.ok{background:#10b981;}
+.fn-health-dot.warn{background:#f59e0b;}
+.fn-health-dot.err{background:#ef4444;}
+.fn-health-dot.unknown{background:var(--text-dim);}
+.fn-health-name{font-size:0.85rem;font-weight:600;color:var(--text);flex:1;}
+.fn-health-count{font-size:0.78rem;color:var(--text-muted);}
+.fn-health-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:2px;max-width:80px;}
+.fn-health-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#10b981,#34d399);transition:width 0.6s ease;}
+
+/* Mini chart bars */
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:60px;padding-top:8px;}
+.mini-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;transition:height 0.5s ease;position:relative;}
+.mini-bar:hover::after{content:attr(data-val);position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+  background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;
+  font-size:0.68rem;white-space:nowrap;color:var(--text);pointer-events:none;}
+.chart-labels{display:flex;gap:3px;margin-top:4px;}
+.chart-label{flex:1;font-size:0.6rem;color:var(--text-dim);text-align:center;overflow:hidden;text-overflow:ellipsis;}
+
+/* Azure badge */
+.azure-badge-row{display:flex;align-items:center;gap:10px;padding:12px 16px;
+  background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);border-radius:var(--radius-sm);}
+.azure-badge-icon{width:32px;height:32px;border-radius:8px;background:rgba(37,99,235,0.12);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.azure-badge-icon svg{width:16px;height:16px;stroke:var(--blue-light);fill:none;stroke-width:2;}
+.azure-badge-text{font-size:0.82rem;color:var(--text-muted);}
+.azure-badge-text strong{color:var(--blue-light);}
+
+/* Front Door badge */
+.frontdoor-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;
+  border-radius:99px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);
+  font-size:0.72rem;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;}
+
+@media(max-width:900px){.monitor-kpi-grid{grid-template-columns:repeat(2,1fr);}.monitor-panels{grid-template-columns:1fr;}.monitor-panel-full{grid-column:1;}}
+@media(max-width:640px){.monitor-body{padding:1.25rem;}}
+
 /* ── RESPONSIVE ── */
 @media(max-width:900px){
   .profile-body{grid-template-columns:1fr;}
@@ -581,6 +764,26 @@ textarea{resize:vertical;min-height:80px;}
   </div>
 </div>
 
+<!-- ══ LIGHTBOX ══ -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-prev" onclick="lightboxNav(-1);event.stopPropagation()">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="lightbox-inner" onclick="event.stopPropagation()">
+    <button class="lightbox-close" onclick="closeLightbox()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div id="lightbox-media"></div>
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+  </div>
+  <button class="lightbox-next" onclick="lightboxNav(1);event.stopPropagation()">
+    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<!-- ══ TOAST CONTAINER ══ -->
+<div id="toast-container"></div>
+
 <!-- ══ NAVBAR ══ -->
 <nav>
   <a class="nav-brand" onclick="showPage('home',null);return false;" href="#">
@@ -615,6 +818,10 @@ textarea{resize:vertical;min-height:80px;}
     <button class="nav-pill" id="ntab-join" onclick="showPage('join',this)">
       <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       Join Event
+    </button>
+    <button class="nav-pill admin-only" id="ntab-monitor" style="display:none" onclick="showPage('monitor',this)">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Monitor
     </button>
     <button class="nav-pill" id="ntab-profile" style="display:none" onclick="showPage('profile',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -749,6 +956,12 @@ textarea{resize:vertical;min-height:80px;}
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input type="text" id="search-input" placeholder="Search by event or title..." oninput="filterGallery()"/>
     </div>
+    <select class="sort-select" id="sort-select" onchange="filterGallery()">
+      <option value="newest">Newest First</option>
+      <option value="oldest">Oldest First</option>
+      <option value="event">By Event</option>
+      <option value="title">By Title</option>
+    </select>
     <button class="btn btn-ghost" onclick="loadGallery()">
       <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
       Refresh
@@ -826,6 +1039,10 @@ textarea{resize:vertical;min-height:80px;}
         <svg class="btn-icon" viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <span class="btn-text">Upload</span>
       </button>
+      <div class="progress-wrap" id="upload-progress-wrap">
+        <div class="progress-label"><span id="progress-phase">Uploading…</span><span id="progress-pct">0%</span></div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1021,11 +1238,168 @@ textarea{resize:vertical;min-height:80px;}
   </div>
 </div>
 
+<!-- ══════════════════════════════════
+     MONITORING PAGE
+══════════════════════════════════ -->
+<div class="page" id="page-monitor">
+  <div class="monitor-hero">
+    <div class="monitor-hero-label">Azure Application Insights</div>
+    <h1>Live <span>Monitoring</span></h1>
+    <p>Real-time telemetry from your Azure Function App — powered by Application Insights.</p>
+  </div>
+
+  <div class="monitor-body">
+
+    <!-- Status bar -->
+    <div class="monitor-status-bar">
+      <div class="status-dot"></div>
+      <span>Application Insights Connected</span>
+      <span style="color:var(--text-dim);font-size:0.78rem" id="monitor-last-updated">—</span>
+      <button class="refresh-btn" onclick="loadMonitorData()">↻ Refresh</button>
+    </div>
+
+    <!-- Azure resource badges -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.75rem;">
+      <div class="azure-badge-row" style="flex:1;min-width:260px;">
+        <div class="azure-badge-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="azure-badge-text">
+          Resource: <strong>eventsnap-functions202604021443</strong><br>
+          <span style="font-size:0.75rem">Function App · Germany West Central</span>
+        </div>
+      </div>
+      <div class="azure-badge-row" style="flex:1;min-width:220px;background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.15);">
+        <div class="azure-badge-icon" style="background:rgba(245,158,11,0.12);">
+          <svg viewBox="0 0 24 24" style="stroke:#fcd34d"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div class="azure-badge-text">
+          <span style="color:#fcd34d"><strong>Azure Front Door</strong></span><br>
+          <span style="font-size:0.75rem;color:#fcd34d">CDN · Global Edge Network · Planned</span>
+        </div>
+        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);font-size:0.72rem;font-weight:700;color:#fcd34d;letter-spacing:0.5px;">◎ PLANNED</span>
+      </div>
+    </div>
+
+    <!-- KPI tiles -->
+    <div class="monitor-kpi-grid">
+      <div class="kpi-tile green">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="kpi-val" id="kpi-requests"><div class="kpi-loading"></div></div>
+        <div class="kpi-label">Total Requests (24h)</div>
+        <div class="kpi-sub" id="kpi-requests-sub">Loading…</div>
+      </div>
+      <div class="kpi-tile blue">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="kpi-val" id="kpi-avg-duration"><div class="kpi-loading"></div></div>
+        <div class="kpi-label">Avg Response Time</div>
+        <div class="kpi-sub" id="kpi-duration-sub">Loading…</div>
+      </div>
+      <div class="kpi-tile rose">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="kpi-val" id="kpi-failures"><div class="kpi-loading"></div></div>
+        <div class="kpi-label">Failed Requests</div>
+        <div class="kpi-sub" id="kpi-failures-sub">Loading…</div>
+      </div>
+      <div class="kpi-tile purple">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="kpi-val" id="kpi-traces"><div class="kpi-loading"></div></div>
+        <div class="kpi-label">Custom EVENTSNAP Traces</div>
+        <div class="kpi-sub" id="kpi-traces-sub">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Panels row 1 -->
+    <div class="monitor-panels">
+
+      <!-- Function health -->
+      <div class="monitor-panel">
+        <div class="monitor-panel-head">
+          <div class="monitor-panel-title">
+            <svg viewBox="0 0 24 24" style="color:#6ee7b7"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Function Health
+          </div>
+          <span style="font-size:0.72rem;color:var(--text-dim)">Last 24h</span>
+        </div>
+        <div class="monitor-panel-body">
+          <div class="fn-health-list" id="fn-health-list">
+            <div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.85rem">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Request volume chart -->
+      <div class="monitor-panel">
+        <div class="monitor-panel-head">
+          <div class="monitor-panel-title">
+            <svg viewBox="0 0 24 24" style="color:var(--blue-light)"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            Request Volume (hourly)
+          </div>
+          <span style="font-size:0.72rem;color:var(--text-dim)">Last 12h</span>
+        </div>
+        <div class="monitor-panel-body">
+          <div class="mini-chart" id="req-chart">
+            <div style="text-align:center;width:100%;color:var(--text-muted);font-size:0.85rem;align-self:center">Loading…</div>
+          </div>
+          <div class="chart-labels" id="req-chart-labels"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENTSNAP custom traces log -->
+    <div class="monitor-panels">
+      <div class="monitor-panel monitor-panel-full">
+        <div class="monitor-panel-head">
+          <div class="monitor-panel-title">
+            <svg viewBox="0 0 24 24" style="color:var(--purple-light)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            EVENTSNAP Custom Traces
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <code style="font-size:0.7rem;color:var(--text-dim);background:var(--surface2);padding:3px 8px;border-radius:4px">message startswith "EVENTSNAP_"</code>
+          </div>
+        </div>
+        <div class="monitor-panel-body">
+          <div class="trace-log" id="trace-log">
+            <div class="trace-empty">Loading traces…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KQL reference -->
+    <div class="monitor-panel" style="margin-top:0;">
+      <div class="monitor-panel-head">
+        <div class="monitor-panel-title">
+          <svg viewBox="0 0 24 24" style="color:var(--text-muted)"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          KQL Queries Used
+        </div>
+      </div>
+      <div class="monitor-panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div>
+          <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px">Custom Traces</div>
+          <pre style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.72rem;color:var(--text-muted);overflow-x:auto;white-space:pre-wrap">traces
+| where message startswith "EVENTSNAP_"
+| order by timestamp desc
+| take 50</pre>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:6px">Request Volume</div>
+          <pre style="background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:0.72rem;color:var(--text-muted);overflow-x:auto;white-space:pre-wrap">requests
+| summarize count() by bin(timestamp, 1h)
+| order by timestamp asc</pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════
 const CONFIG = {
+  // ── Azure endpoints ──
   SAS_ENDPOINT:     "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateUploadSas",
   CREATE_ENDPOINT:  "https://prod-12.germanywestcentral.logic.azure.com/workflows/a08171ebcb424bf1b95619707326ac1c/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=bWB7j4dzLQPEwn-sZeiocBPU5-WZjAkFTriPt_l_fUQ",
   GETALL_ENDPOINT:  "https://prod-14.germanywestcentral.logic.azure.com/workflows/97d543b0d8594ac7b15b7dfebc96cf9d/triggers/When_an_HTTP_request_is_received/paths/invoke/rest/v1/media?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=TrKQQLcc9Gloot_qNXsl1hwq1onCBMXpT7gBJ5S_KKI",
@@ -1034,6 +1408,11 @@ const CONFIG = {
   READ_SAS_ENDPOINT:"https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GenerateReadSas",
   STATS_ENDPOINT:   "https://eventsnap-functions-bubxc8hrc7hzcgej.germanywestcentral-01.azurewebsites.net/api/GetMediaStats",
   ADMIN_SECRET:     "EVENTSNAP2026",
+  // ── Application Insights ──
+  APPINSIGHTS_APP_ID:  "ee160626-f431-4692-8640-97e49ef6ff79",
+  APPINSIGHTS_API_KEY: "5vfmzayi5zfcmaocpjqlez2yq1z7n8cpji4hex0g",
+  // ── Azure Front Door — update FRONTDOOR_URL after setup ──
+  FRONTDOOR_URL:    "https://eventsnap-XXXX.azurefd.net",
 };
 
 // ══════════════════════════════════
@@ -1230,6 +1609,7 @@ function showPage(name, el) {
   if(el) el.classList.add('active');
   if(name==='gallery') loadGallery();
   if(name==='profile') updateProfilePage();
+  if(name==='monitor') loadMonitorData();
   window.scrollTo(0,0);
 }
 
@@ -1279,6 +1659,16 @@ async function updateStats(){
 // ══════════════════════════════════
 //  UPLOAD
 // ══════════════════════════════════
+function setProgress(phase, pct){
+  const wrap=document.getElementById('upload-progress-wrap');
+  if(!wrap) return;
+  if(pct===null){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  document.getElementById('progress-phase').textContent=phase;
+  document.getElementById('progress-pct').textContent=Math.round(pct)+'%';
+  document.getElementById('progress-fill').style.width=pct+'%';
+}
+
 async function handleUpload(){
   if(!currentUser){ openAuthModal('login'); return; }
   const eventId=v('up-eventId'),eventName=v('up-eventName'),title=v('up-title'),uploader=v('up-uploader'),desc=v('up-desc');
@@ -1291,18 +1681,39 @@ async function handleUpload(){
   const allowed=['image/jpeg','image/png','image/gif','image/webp','video/mp4','video/quicktime','video/x-msvideo','video/webm'];
   if(!allowed.includes(selectedFile.type)) return showErr('up-error','Invalid file type. Allowed: JPG, PNG, GIF, WebP, MP4, MOV, AVI, WebM.');
   setLoading('up-btn',true);
+  setProgress('Requesting upload URL…', 5);
   try{
     const sasRes=await fetch(CONFIG.SAS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fileName:selectedFile.name,eventId,fileSize:selectedFile.size})});
     if(!sasRes.ok){const err=await sasRes.json();throw new Error(err.error||'Upload request failed ('+sasRes.status+')');}
     const{uploadUrl,blobUrl}=await sasRes.json();
-    const upRes=await fetch(uploadUrl,{method:'PUT',headers:{'x-ms-blob-type':'BlockBlob','Content-Type':selectedFile.type},body:selectedFile});
-    if(!upRes.ok) throw new Error('Upload failed ('+upRes.status+')');
+
+    // Upload with real XHR progress
+    setProgress('Uploading file…', 10);
+    await new Promise((resolve, reject)=>{
+      const xhr=new XMLHttpRequest();
+      xhr.open('PUT', uploadUrl);
+      xhr.setRequestHeader('x-ms-blob-type','BlockBlob');
+      xhr.setRequestHeader('Content-Type', selectedFile.type);
+      xhr.upload.onprogress=e=>{
+        if(e.lengthComputable){
+          const pct=10+(e.loaded/e.total)*80;
+          setProgress('Uploading file… '+formatSize(e.loaded)+' / '+formatSize(e.total), pct);
+        }
+      };
+      xhr.onload=()=>xhr.status===201||xhr.status===200?resolve():reject(new Error('Upload failed ('+xhr.status+')'));
+      xhr.onerror=()=>reject(new Error('Network error during upload.'));
+      xhr.send(selectedFile);
+    });
+
+    setProgress('Saving metadata…', 92);
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
         uploaderName:uploader||currentUser.name,uploaderEmail:currentUser.email||'',
         fileName:selectedFile.name,blobUrl,mediaType:isVideo?'video':'image',
         uploadDate:new Date().toISOString(),ttl:31536000})});
     if(!metaRes.ok) throw new Error('Save failed ('+metaRes.status+')');
+    setProgress('Done!', 100);
+    setTimeout(()=>setProgress(null,null),800);
     clearFile();
     ['up-eventId','up-eventName','up-title','up-desc'].forEach(id=>{document.getElementById(id).value='';});
     document.getElementById('success-modal-info').innerHTML=
@@ -1310,8 +1721,9 @@ async function handleUpload(){
       `<div class="success-modal-info-row"><span>Title</span><span>${esc(title)}</span></div>`+
       `<div class="success-modal-info-row"><span>Type</span><span>${isVideo?'Video':'Image'}</span></div>`;
     document.getElementById('upload-success-modal').classList.add('open');
-    sasCache.clear(); // clear cache so gallery shows the new upload on next visit
-  }catch(err){showErr('up-error',err.message);}
+    sasCache.clear();
+    toast('Upload successful — "'+title+'" is now in the gallery!','success');
+  }catch(err){showErr('up-error',err.message);setProgress(null,null);toast(err.message,'error');}
   setLoading('up-btn',false);
 }
 
@@ -1337,6 +1749,70 @@ async function getReadUrl(fileName, eventId) {
 }
 
 // ══════════════════════════════════
+//  TOAST NOTIFICATIONS
+// ══════════════════════════════════
+function toast(msg, type='info', duration=3500){
+  const tc=document.getElementById('toast-container');
+  const icons={
+    success:'<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
+    error:'<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+    info:'<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;
+  t.innerHTML=icons[type]+msg;
+  t.onclick=()=>dismissToast(t);
+  tc.appendChild(t);
+  setTimeout(()=>dismissToast(t), duration);
+}
+function dismissToast(t){
+  t.classList.add('out');
+  setTimeout(()=>t.remove(),320);
+}
+
+// ══════════════════════════════════
+//  EVENT COLOUR MAP
+// ══════════════════════════════════
+const eventColourMap=new Map();
+const eventColourCount=6;
+let nextColour=0;
+function getEventChipClass(eventId){
+  if(!eventColourMap.has(eventId)){eventColourMap.set(eventId,nextColour%eventColourCount);nextColour++;}
+  return 'event-chip-'+eventColourMap.get(eventId);
+}
+
+// ══════════════════════════════════
+//  LIGHTBOX
+// ══════════════════════════════════
+let lbItems=[],lbIndex=0;
+function openLightbox(items,index){
+  lbItems=items; lbIndex=index;
+  renderLightboxSlide();
+  document.getElementById('lightbox').classList.add('open');
+  document.addEventListener('keydown',lightboxKey);
+}
+function closeLightbox(e){
+  if(e&&e.target!==document.getElementById('lightbox')&&e.type==='click')return;
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox-media').innerHTML='';
+  document.removeEventListener('keydown',lightboxKey);
+}
+function lightboxKey(e){if(e.key==='ArrowLeft')lightboxNav(-1);else if(e.key==='ArrowRight')lightboxNav(1);else if(e.key==='Escape')closeLightbox();}
+function lightboxNav(dir){lbIndex=(lbIndex+dir+lbItems.length)%lbItems.length;renderLightboxSlide();}
+async function renderLightboxSlide(){
+  const m=lbItems[lbIndex];
+  const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
+  const med=document.getElementById('lightbox-media');
+  med.innerHTML='<div style="width:200px;height:120px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem">Loading…</div>';
+  document.getElementById('lightbox-caption').textContent=(m.title||'Untitled')+' · '+(m.eventName||m.eventId||'');
+  try{
+    const url=await getReadUrl(m.fileName,m.eventId);
+    if(isVid){med.innerHTML=`<video src="${url}" controls autoplay style="max-width:92vw;max-height:80vh;border-radius:12px;object-fit:contain"></video>`;}
+    else{med.innerHTML=`<img src="${url}" alt="${esc(m.title||'')}" style="max-width:92vw;max-height:80vh;border-radius:12px;object-fit:contain"/>`;}
+  }catch(e){med.innerHTML='<div style="color:#fca5a5;padding:2rem">Failed to load media.</div>';}
+}
+
+// ══════════════════════════════════
 //  GALLERY
 // ══════════════════════════════════
 let allMedia=[];
@@ -1344,7 +1820,17 @@ let allMedia=[];
 async function loadGallery(){
   const c=document.getElementById('gallery-container');
   hideAlert('gallery-error');
-  c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" style="animation:spin 1.2s linear infinite"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p style="margin-top:1rem;color:var(--text-muted)">Loading...</p></div>';
+  // Show skeleton cards immediately
+  c.innerHTML='<div class="media-grid">'+Array(8).fill(0).map((_,i)=>`
+    <div class="skeleton" style="animation-delay:${i*0.05}s">
+      <div class="skeleton-thumb"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line xshort"></div>
+        <div class="skeleton-actions"><div class="skeleton-btn"></div><div class="skeleton-btn"></div></div>
+      </div>
+    </div>`).join('')+'</div>';
   try{
     const res=await fetch(CONFIG.GETALL_ENDPOINT,{method:'GET'});
     if(!res.ok) throw new Error('Failed to load ('+res.status+')');
@@ -1356,12 +1842,23 @@ async function loadGallery(){
   }catch(err){
     showErr('gallery-error',err.message);
     c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><h3>Load Failed</h3><p>Check your connection and try again.</p></div>';
+    toast('Failed to load gallery: '+err.message,'error');
   }
 }
 
+function getSortedFiltered(items){
+  const q=(document.getElementById('search-input')||{}).value?.toLowerCase()||'';
+  const sort=(document.getElementById('sort-select')||{}).value||'newest';
+  let filtered=q?items.filter(m=>(m.eventName||'').toLowerCase().includes(q)||(m.title||'').toLowerCase().includes(q)):items.slice();
+  if(sort==='oldest') filtered.sort((a,b)=>new Date(a.uploadDate||0)-new Date(b.uploadDate||0));
+  else if(sort==='event') filtered.sort((a,b)=>(a.eventId||'').localeCompare(b.eventId||''));
+  else if(sort==='title') filtered.sort((a,b)=>(a.title||'').localeCompare(b.title||''));
+  else filtered.sort((a,b)=>new Date(b.uploadDate||0)-new Date(a.uploadDate||0));
+  return filtered;
+}
+
 function filterGallery(){
-  const q=document.getElementById('search-input').value.toLowerCase();
-  renderGallery(allMedia.filter(m=>(m.eventName||'').toLowerCase().includes(q)||(m.title||'').toLowerCase().includes(q)),'gallery-container',true);
+  renderGallery(getSortedFiltered(allMedia),'gallery-container',true);
 }
 
 function renderGallery(items,containerId,showAdmin){
@@ -1371,6 +1868,7 @@ function renderGallery(items,containerId,showAdmin){
     c.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><h3>No Media Found</h3><p>Upload some photos or videos to get started.</p></div>';
     return;
   }
+  // Build cards — thumbnails start as placeholder icons
   c.innerHTML='<div class="media-grid">'+items.map((m,i)=>{
     const uid=containerId+i;
     const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
@@ -1378,14 +1876,15 @@ function renderGallery(items,containerId,showAdmin){
     const thumbIcon=isVid
       ?'<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'
       :'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
-    return `<div class="media-card">
+    const chipClass=getEventChipClass(m.eventId||'');
+    return `<div class="media-card" style="animation-delay:${Math.min(i,12)*0.045}s" onclick="openLightbox(window._lbItems_${containerId},${i})" role="button" tabindex="0">
       <div class="media-thumb" id="thumb-${uid}">${thumbIcon}<span class="media-type-tag ${isVid?'video':'image'}">${isVid?'Video':'Photo'}</span></div>
       <div class="media-body">
         <div class="media-title">${esc(m.title||'Untitled')}</div>
-        <div><span class="media-event-tag">${esc(m.eventName||m.eventId||'')}</span></div>
+        <div><span class="media-event-tag ${chipClass}">${esc(m.eventName||m.eventId||'')}</span></div>
         <div class="media-meta-row">${esc(m.uploaderName||'Unknown')} &nbsp; ${m.uploadDate?new Date(m.uploadDate).toLocaleDateString():''}</div>
         ${m.description?`<div style="font-size:0.78rem;color:var(--text-muted);font-style:italic;margin-bottom:8px">${esc(m.description)}</div>`:''}
-        <div class="media-actions">
+        <div class="media-actions" onclick="event.stopPropagation()">
           <button class="btn btn-ghost btn-sm" id="vbtn-${uid}">View</button>
           <button class="btn btn-ghost btn-sm" onclick="downloadMedia('${esc(m.fileName||'')}','${esc(m.eventId||'')}','${esc(m.title||'media')}')">Download</button>
           ${editBtn}
@@ -1394,13 +1893,26 @@ function renderGallery(items,containerId,showAdmin){
     </div>`;
   }).join('')+'</div>';
 
-  // Load all thumbnails in parallel batches of 6
-  (async()=>{
-    const BATCH = 6;
-    for(let i=0;i<items.length;i+=BATCH){
-      await Promise.all(items.slice(i,i+BATCH).map((m,j)=>loadThumb(m,containerId+(i+j))));
-    }
-  })();
+  // Store items for lightbox access
+  window['_lbItems_'+containerId]=items;
+
+  // IntersectionObserver: only fetch SAS for visible cards
+  const observer=new IntersectionObserver((entries,obs)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const el=entry.target;
+        const idx=parseInt(el.dataset.idx);
+        const uid=containerId+idx;
+        obs.unobserve(el);
+        loadThumb(items[idx],uid);
+      }
+    });
+  },{rootMargin:'200px'});
+
+  items.forEach((_,i)=>{
+    const card=c.querySelectorAll('.media-card')[i];
+    if(card){card.dataset.idx=i;observer.observe(card);}
+  });
 }
 
 async function loadThumb(m,uid){
@@ -1411,10 +1923,18 @@ async function loadThumb(m,uid){
   try{
     const readUrl=await getReadUrl(m.fileName,m.eventId);
     const badge=thumbEl.querySelector('.media-type-tag');
-    thumbEl.innerHTML=isVid
-      ?`<video src="${readUrl}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>`
-      :`<img src="${readUrl}" alt="${esc(m.title||'')}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`;
-    if(badge) thumbEl.appendChild(badge);
+    if(isVid){
+      const vid=document.createElement('video');
+      vid.src=readUrl; vid.muted=true; vid.playsInline=true; vid.preload='metadata';
+      Object.assign(vid.style,{width:'100%',height:'100%',objectFit:'cover'});
+      thumbEl.innerHTML=''; if(badge)thumbEl.appendChild(badge); thumbEl.insertBefore(vid,badge);
+    } else {
+      const img=new Image();
+      img.alt=m.title||''; Object.assign(img.style,{width:'100%',height:'100%',objectFit:'cover'});
+      img.onerror=()=>img.style.display='none';
+      img.src=readUrl;
+      thumbEl.innerHTML=''; if(badge)thumbEl.appendChild(badge); thumbEl.insertBefore(img,badge);
+    }
     if(viewBtn) viewBtn.onclick=()=>window.open(readUrl,'_blank');
   }catch(e){if(viewBtn) viewBtn.onclick=()=>window.open(m.blobUrl||'','_blank');}
 }
@@ -1548,6 +2068,157 @@ async function handleDelete(){
 // ══════════════════════════════════
 //  HELPERS
 // ══════════════════════════════════
+// ══════════════════════════════════
+//  APPLICATION INSIGHTS MONITORING
+// ══════════════════════════════════
+async function aiQuery(query){
+  const url=`https://api.applicationinsights.io/v1/apps/${CONFIG.APPINSIGHTS_APP_ID}/query`;
+  const res=await fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':CONFIG.APPINSIGHTS_API_KEY},
+    body:JSON.stringify({query})
+  });
+  if(!res.ok) throw new Error('AI query failed '+res.status);
+  return res.json();
+}
+
+function aiVal(data,row=0,col=0){
+  try{return data.tables[0].rows[row][col];}catch(e){return null;}
+}
+
+function traceBadgeClass(msg){
+  if(msg.includes('UPLOAD_SAS')) return 'upload';
+  if(msg.includes('READ_SAS')) return 'read';
+  if(msg.includes('STATS')) return 'stats';
+  if(msg.includes('VALIDATE')) return 'validate';
+  return 'other';
+}
+
+async function loadMonitorData(){
+  // Show Front Door URL
+  const fdEl=document.getElementById('fd-url-display');
+  if(fdEl && CONFIG.FRONTDOOR_URL !== 'https://eventsnap-XXXX.azurefd.net'){
+    fdEl.textContent=CONFIG.FRONTDOOR_URL;
+  }
+
+  // Update timestamp
+  document.getElementById('monitor-last-updated').textContent=
+    'Updated '+new Date().toLocaleTimeString();
+
+  // Run all queries in parallel
+  const [reqData, durationData, failData, traceCountData, traceLogData, fnData, hourlyData] = await Promise.allSettled([
+    aiQuery(`requests | where timestamp > ago(24h) | summarize count()`),
+    aiQuery(`requests | where timestamp > ago(24h) | summarize avg(duration)`),
+    aiQuery(`requests | where timestamp > ago(24h) and success == false | summarize count()`),
+    aiQuery(`traces | where timestamp > ago(24h) and message startswith "EVENTSNAP_" | summarize count()`),
+    aiQuery(`traces | where timestamp > ago(24h) and message startswith "EVENTSNAP_" | order by timestamp desc | take 20 | project timestamp, message, severityLevel`),
+    aiQuery(`requests | where timestamp > ago(24h) | summarize count=count(), avgDuration=avg(duration) by name | order by count desc`),
+    aiQuery(`requests | where timestamp > ago(12h) | summarize count() by bin(timestamp, 1h) | order by timestamp asc`)
+  ]);
+
+  // ── KPI: Total requests
+  if(reqData.status==='fulfilled'){
+    const val=aiVal(reqData.value)||0;
+    document.getElementById('kpi-requests').textContent=val.toLocaleString();
+    document.getElementById('kpi-requests-sub').textContent='Function invocations today';
+  } else {
+    document.getElementById('kpi-requests').textContent='—';
+    document.getElementById('kpi-requests-sub').textContent='Could not load';
+  }
+
+  // ── KPI: Avg duration
+  if(durationData.status==='fulfilled'){
+    const ms=Math.round(aiVal(durationData.value)||0);
+    document.getElementById('kpi-avg-duration').textContent=ms+'ms';
+    document.getElementById('kpi-duration-sub').textContent=ms<500?'✓ Good performance':ms<2000?'⚠ Moderate':'⚠ Slow — check logs';
+  } else {
+    document.getElementById('kpi-avg-duration').textContent='—';
+    document.getElementById('kpi-duration-sub').textContent='Could not load';
+  }
+
+  // ── KPI: Failed requests
+  if(failData.status==='fulfilled'){
+    const val=aiVal(failData.value)||0;
+    document.getElementById('kpi-failures').textContent=val;
+    document.getElementById('kpi-failures-sub').textContent=val===0?'✓ No failures detected':val+' failure'+(val!==1?'s':'')+' — check logs';
+  } else {
+    document.getElementById('kpi-failures').textContent='—';
+    document.getElementById('kpi-failures-sub').textContent='Could not load';
+  }
+
+  // ── KPI: Custom traces
+  if(traceCountData.status==='fulfilled'){
+    const val=aiVal(traceCountData.value)||0;
+    document.getElementById('kpi-traces').textContent=val;
+    document.getElementById('kpi-traces-sub').textContent='EVENTSNAP_ events logged';
+  } else {
+    document.getElementById('kpi-traces').textContent='—';
+    document.getElementById('kpi-traces-sub').textContent='Could not load';
+  }
+
+  // ── Function health list
+  const fnEl=document.getElementById('fn-health-list');
+  if(fnData.status==='fulfilled' && fnData.value.tables[0].rows.length){
+    const rows=fnData.value.tables[0].rows;
+    const maxCount=Math.max(...rows.map(r=>r[1]||0));
+    fnEl.innerHTML=rows.map(r=>{
+      const name=r[0]||'Unknown';
+      const count=r[1]||0;
+      const avgMs=Math.round(r[2]||0);
+      const pct=maxCount>0?Math.round((count/maxCount)*100):0;
+      const dotClass=avgMs<1000?'ok':avgMs<3000?'warn':'err';
+      return `<div class="fn-health-row">
+        <div class="fn-health-dot ${dotClass}"></div>
+        <div class="fn-health-name">${esc(name.replace('GET ','').replace('POST ',''))}</div>
+        <div class="fn-health-count">${count} calls · ${avgMs}ms avg</div>
+        <div class="fn-health-bar-bg"><div class="fn-health-bar-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+  } else {
+    fnEl.innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.85rem">No request data in last 24h.<br>Use the app to generate telemetry.</div>';
+  }
+
+  // ── Hourly chart
+  const chartEl=document.getElementById('req-chart');
+  const labelsEl=document.getElementById('req-chart-labels');
+  if(hourlyData.status==='fulfilled' && hourlyData.value.tables[0].rows.length){
+    const rows=hourlyData.value.tables[0].rows;
+    const maxVal=Math.max(...rows.map(r=>r[1]||0),1);
+    const colors=['var(--blue)','var(--purple)','var(--rose)','#10b981','var(--blue-light)'];
+    chartEl.innerHTML=rows.map((r,i)=>{
+      const val=r[1]||0;
+      const heightPct=Math.max(Math.round((val/maxVal)*100),4);
+      const time=new Date(r[0]).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      return `<div class="mini-bar" data-val="${val} req" style="height:${heightPct}%;background:${colors[i%colors.length]};opacity:0.8" title="${time}: ${val} requests"></div>`;
+    }).join('');
+    labelsEl.innerHTML=rows.map(r=>{
+      const time=new Date(r[0]).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      return `<div class="chart-label">${time}</div>`;
+    }).join('');
+  } else {
+    chartEl.innerHTML='<div style="text-align:center;width:100%;color:var(--text-muted);font-size:0.85rem;align-self:center">No data yet — use the app to generate requests</div>';
+    labelsEl.innerHTML='';
+  }
+
+  // ── EVENTSNAP trace log
+  const logEl=document.getElementById('trace-log');
+  if(traceLogData.status==='fulfilled' && traceLogData.value.tables[0].rows.length){
+    const rows=traceLogData.value.tables[0].rows;
+    logEl.innerHTML=rows.map(r=>{
+      const ts=new Date(r[0]).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const msg=r[1]||'';
+      const badge=traceBadgeClass(msg);
+      return `<div class="trace-row">
+        <span class="trace-time">${ts}</span>
+        <span class="trace-msg">${esc(msg)}</span>
+        <span class="trace-badge ${badge}">${badge.toUpperCase()}</span>
+      </div>`;
+    }).join('');
+  } else {
+    logEl.innerHTML='<div class="trace-empty">No EVENTSNAP_ traces yet.<br>Upload a file or generate a SAS token to see traces appear here.</div>';
+  }
+}
+
 function v(id){return document.getElementById(id).value.trim();}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showAlert(id,msg){const e=document.getElementById(id);if(msg)e.textContent=msg;e.classList.add('show');}
