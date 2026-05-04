@@ -1786,9 +1786,15 @@ function getEventChipClass(eventId){
 // ══════════════════════════════════
 let lbItems=[],lbIndex=0;
 function openLightbox(items,index){
-  lbItems=items; lbIndex=index;
+  // Fallback to allMedia if items not ready yet
+  lbItems=(Array.isArray(items)&&items.length>0)?items:allMedia;
+  lbIndex=Math.max(0,Math.min(index,lbItems.length-1));
   renderLightboxSlide();
   document.getElementById('lightbox').classList.add('open');
+  // Show/hide prev-next based on count
+  const showNav=lbItems.length>1;
+  document.querySelector('.lightbox-prev').style.display=showNav?'flex':'none';
+  document.querySelector('.lightbox-next').style.display=showNav?'flex':'none';
   document.addEventListener('keydown',lightboxKey);
 }
 function closeLightbox(e){
@@ -1798,13 +1804,20 @@ function closeLightbox(e){
   document.removeEventListener('keydown',lightboxKey);
 }
 function lightboxKey(e){if(e.key==='ArrowLeft')lightboxNav(-1);else if(e.key==='ArrowRight')lightboxNav(1);else if(e.key==='Escape')closeLightbox();}
-function lightboxNav(dir){lbIndex=(lbIndex+dir+lbItems.length)%lbItems.length;renderLightboxSlide();}
+function lightboxNav(dir){
+  if(!lbItems.length) return;
+  lbIndex=(lbIndex+dir+lbItems.length)%lbItems.length;
+  renderLightboxSlide();
+}
 async function renderLightboxSlide(){
+  if(!lbItems.length) return;
   const m=lbItems[lbIndex];
   const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
   const med=document.getElementById('lightbox-media');
+  // Show counter
+  document.getElementById('lightbox-caption').textContent=
+    `${m.title||'Untitled'} · ${m.eventName||m.eventId||''} (${lbIndex+1} / ${lbItems.length})`;
   med.innerHTML='<div style="width:200px;height:120px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);font-size:0.85rem">Loading…</div>';
-  document.getElementById('lightbox-caption').textContent=(m.title||'Untitled')+' · '+(m.eventName||m.eventId||'');
   try{
     const url=await getReadUrl(m.fileName,m.eventId);
     if(isVid){med.innerHTML=`<video src="${url}" controls autoplay style="max-width:92vw;max-height:80vh;border-radius:12px;object-fit:contain"></video>`;}
