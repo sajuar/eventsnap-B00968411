@@ -506,11 +506,14 @@ textarea{resize:vertical;min-height:80px;}
 .success-modal-info-row span:last-child{color:var(--text);font-weight:600;}
 
 #page-profile{min-height:100vh;}
-.profile-banner{height:200px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,var(--bg) 0%,rgba(225,29,72,0.12) 50%,rgba(37,99,235,0.08) 100%);}
+.profile-banner{height:160px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1a4a 30%,rgba(225,29,72,0.4) 60%,rgba(37,99,235,0.3) 100%);}
+.profile-banner::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,0.3) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 20%,rgba(225,29,72,0.25) 0%,transparent 50%);}
 .profile-banner::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.35),transparent);}
-.profile-header{padding:0 2.5rem;position:relative;margin-top:-50px;margin-bottom:2rem;}
+  background:linear-gradient(90deg,transparent,rgba(225,29,72,0.5),transparent);}
+.profile-header{padding:0 2.5rem;position:relative;margin-top:-48px;margin-bottom:2rem;}
 .profile-avatar-ring{width:100px;height:100px;border-radius:50%;padding:3px;
   background:linear-gradient(135deg,var(--rose),var(--purple));display:inline-block;margin-bottom:1rem;}
 .profile-avatar{width:94px;height:94px;border-radius:50%;background:linear-gradient(135deg,var(--rose-dark),var(--purple));
@@ -1679,7 +1682,7 @@ function showPage(name, el) {
   document.querySelectorAll('.nav-pill').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   if(el) el.classList.add('active');
-  if(name==='gallery') loadGallery();
+  if(name==='gallery') { if(!allMedia.length) loadGallery(); else renderGallery(getSortedFiltered(allMedia),'gallery-container',true); }
   if(name==='profile') updateProfilePage();
   if(name==='monitor') loadMonitorData();
   window.scrollTo(0,0);
@@ -1956,7 +1959,11 @@ async function loadGallery(){
 function getSortedFiltered(items){
   const q=(document.getElementById('search-input')||{}).value?.toLowerCase()||'';
   const sort=(document.getElementById('sort-select')||{}).value||'newest';
-  let filtered=q?items.filter(m=>(m.eventName||'').toLowerCase().includes(q)||(m.title||'').toLowerCase().includes(q)):items.slice();
+  let filtered=q?items.filter(m=>
+    (m.eventName||'').toLowerCase().includes(q)||
+    (m.title||'').toLowerCase().includes(q)||
+    (Array.isArray(m.aiTags)&&m.aiTags.some(t=>t.toLowerCase().includes(q)))
+  ):items.slice();
   if(sort==='oldest') filtered.sort((a,b)=>new Date(a.uploadDate||0)-new Date(b.uploadDate||0));
   else if(sort==='event') filtered.sort((a,b)=>(a.eventId||'').localeCompare(b.eventId||''));
   else if(sort==='title') filtered.sort((a,b)=>(a.title||'').localeCompare(b.title||''));
