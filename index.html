@@ -801,19 +801,18 @@ textarea{resize:vertical;min-height:80px;}
 
 <!-- ══ UPLOAD SUCCESS MODAL ══ -->
 <div class="modal-overlay" id="delete-success-modal">
-  <div class="upload-success-modal">
-    <div class="success-icon-wrap" style="background:rgba(239,68,68,0.1)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+  <div class="success-modal">
+    <div class="success-icon-ring" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:38px;height:38px;stroke-dasharray:none;animation:none;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
     </div>
-    <div class="success-modal-title">DELETED!</div>
-    <p class="success-modal-sub">The media file has been permanently removed from EventSnap and Azure Blob Storage.</p>
+    <h2>Deleted!</h2>
+    <p>The media file has been permanently removed from EventSnap and Azure Blob Storage.</p>
     <div class="success-modal-info" id="delete-modal-info"></div>
-    <button class="btn btn-primary btn-full" onclick="closeDeleteSuccess()" style="margin-top:1.5rem">
-      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg>
+    <button class="btn btn-danger btn-full" onclick="closeDeleteSuccess()">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
       Done
     </button>
   </div>
-</div>
 </div>
 
 <!-- ══ UPLOAD SUCCESS MODAL ══ -->
