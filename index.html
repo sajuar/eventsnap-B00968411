@@ -36,6 +36,28 @@
   --shadow-lg:0 12px 48px rgba(0,0,0,0.18);
   --blob-opacity:0.05;
 }
+/* Light mode green/coloured text overrides for readability */
+:root.light .monitor-hero-label,
+:root.light .monitor-status-bar span,
+:root.light .monitor-status-bar .refresh-btn,
+:root.light .monitor-hero h1 span{color:#0a7a50;}
+:root.light .monitor-status-bar{background:rgba(10,122,80,0.08);border-color:rgba(10,122,80,0.2);}
+:root.light .status-dot{background:#0a7a50;box-shadow:0 0 8px #0a7a50;}
+:root.light .kpi-tile.green .kpi-icon{background:rgba(10,122,80,0.1);color:#0a7a50;}
+:root.light .fn-health-dot.ok{background:#0a7a50;}
+:root.light .fn-health-bar-fill{background:linear-gradient(90deg,#0a7a50,#12a067);}
+:root.light .trace-badge.stats{background:rgba(10,122,80,0.1);color:#0a7a50;}
+:root.light .frontdoor-badge,
+:root.light .azure-badge-text strong{color:#0a7a50;}
+:root.light .event-chip-0{background:rgba(180,20,50,0.08);color:#b41232;border-color:rgba(180,20,50,0.18);}
+:root.light .event-chip-1{background:rgba(20,70,180,0.08);color:#1446b4;border-color:rgba(20,70,180,0.18);}
+:root.light .event-chip-2{background:rgba(90,30,180,0.08);color:#5a1eb4;border-color:rgba(90,30,180,0.18);}
+:root.light .event-chip-3{background:rgba(10,122,80,0.08);color:#0a7a50;border-color:rgba(10,122,80,0.18);}
+:root.light .event-chip-4{background:rgba(160,100,0,0.08);color:#a06400;border-color:rgba(160,100,0,0.18);}
+:root.light .event-chip-5{background:rgba(180,20,100,0.08);color:#b41264;border-color:rgba(180,20,100,0.18);}
+:root.light .toast-success{background:rgba(10,122,80,0.08);border-color:rgba(10,122,80,0.2);color:#0a7a50;}
+:root.light .toast-error{background:rgba(180,20,50,0.08);border-color:rgba(180,20,50,0.2);color:#b41232;}
+:root.light .toast-info{background:rgba(20,70,180,0.08);border-color:rgba(20,70,180,0.2);color:#1446b4;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden;transition:background 0.3s,color 0.3s;}
@@ -749,7 +771,20 @@ textarea{resize:vertical;min-height:80px;}
 </div>
 
 <!-- ══ UPLOAD SUCCESS MODAL ══ -->
-<div class="modal-overlay" id="upload-success-modal">
+<div class="modal-overlay" id="delete-success-modal">
+  <div class="upload-success-modal">
+    <div class="success-icon-wrap" style="background:rgba(239,68,68,0.1)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </div>
+    <div class="success-modal-title">DELETED!</div>
+    <p class="success-modal-sub">The media file has been permanently removed from EventSnap and Azure Blob Storage.</p>
+    <div class="success-modal-info" id="delete-modal-info"></div>
+    <button class="btn btn-primary btn-full" onclick="closeDeleteSuccess()" style="margin-top:1.5rem">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg>
+      Done
+    </button>
+  </div>
+</div>
   <div class="success-modal">
     <div class="success-icon-ring">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1258,29 +1293,6 @@ textarea{resize:vertical;min-height:80px;}
       <button class="refresh-btn" onclick="loadMonitorData()">↻ Refresh</button>
     </div>
 
-    <!-- Azure resource badges -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.75rem;">
-      <div class="azure-badge-row" style="flex:1;min-width:260px;">
-        <div class="azure-badge-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-        </div>
-        <div class="azure-badge-text">
-          Resource: <strong>eventsnap-functions202604021443</strong><br>
-          <span style="font-size:0.75rem">Function App · Germany West Central</span>
-        </div>
-      </div>
-      <div class="azure-badge-row" style="flex:1;min-width:220px;background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.15);">
-        <div class="azure-badge-icon" style="background:rgba(245,158,11,0.12);">
-          <svg viewBox="0 0 24 24" style="stroke:#fcd34d"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <div class="azure-badge-text">
-          <span style="color:#fcd34d"><strong>Azure Front Door</strong></span><br>
-          <span style="font-size:0.75rem;color:#fcd34d">CDN · Global Edge Network · Planned</span>
-        </div>
-        <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);font-size:0.72rem;font-weight:700;color:#fcd34d;letter-spacing:0.5px;">◎ PLANNED</span>
-      </div>
-    </div>
-
     <!-- KPI tiles -->
     <div class="monitor-kpi-grid">
       <div class="kpi-tile green">
@@ -1568,20 +1580,37 @@ function renderProfileUploads(items){
     return;
   }
   c.innerHTML='<div class="profile-uploads-grid">'+
-    items.map(m=>{
+    items.map((m,i)=>{
       const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
-      return `<div class="profile-upload-item">
-        <div class="profile-upload-thumb">
-          ${isVid
-            ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'
-            :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'}
-        </div>
+      const placeholder=isVid
+        ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>'
+        :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;opacity:0.4"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>';
+      return `<div class="profile-upload-item" onclick="openLightbox(window._lbProfile,${i})" style="cursor:pointer">
+        <div class="profile-upload-thumb" id="pthumb-${i}" style="overflow:hidden;position:relative">${placeholder}</div>
         <div class="profile-upload-info">
           <div class="profile-upload-title">${esc(m.title||'Untitled')}</div>
           <div class="profile-upload-event">${esc(m.eventName||m.eventId||'')}</div>
         </div>
       </div>`;
     }).join('')+'</div>';
+
+  window._lbProfile=items;
+
+  // Load thumbnails via SAS
+  items.forEach(async(m,i)=>{
+    if(!m.fileName||!m.eventId) return;
+    const el=document.getElementById('pthumb-'+i);
+    if(!el) return;
+    const isVid=(m.mediaType==='video')||(m.fileName&&/\.(mp4|mov|avi|webm|mkv)$/i.test(m.fileName));
+    try{
+      const url=await getReadUrl(m.fileName,m.eventId);
+      if(isVid){
+        el.innerHTML=`<video src="${url}" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>`;
+      } else {
+        el.innerHTML=`<img src="${url}" alt="${esc(m.title||'')}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`;
+      }
+    }catch(e){}
+  });
 }
 
 window.addEventListener('DOMContentLoaded', ()=>{
@@ -2067,6 +2096,10 @@ async function handleUpdate(){
   setLoading('mg-save-btn',false);
 }
 
+function closeDeleteSuccess(){
+  document.getElementById('delete-success-modal').classList.remove('open');
+}
+
 function closeUploadSuccess(){
   document.getElementById('upload-success-modal').classList.remove('open');
   showPage('gallery', document.getElementById('ntab-gallery'));
@@ -2090,7 +2123,15 @@ async function handleDelete(){
     closeDelModal();
     document.getElementById('mg-result-card').style.display='none';
     document.getElementById('mg-id').value=''; document.getElementById('mg-eventId').value='';
-    showAlert('mg-success','Deleted successfully.');
+    // Show delete success modal
+    const deleted=allMedia.find(m=>m.id===currentMediaId);
+    if(deleted){
+      document.getElementById('delete-modal-info').innerHTML=
+        `<div class="success-modal-info-row"><span>Title</span><span>${esc(deleted.title||'Untitled')}</span></div>`+
+        `<div class="success-modal-info-row"><span>Event</span><span>${esc(deleted.eventName||deleted.eventId||'')}</span></div>`+
+        `<div class="success-modal-info-row"><span>Type</span><span>${deleted.mediaType==='video'?'Video':'Image'}</span></div>`;
+    }
+    document.getElementById('delete-success-modal').classList.add('open');
     allMedia=allMedia.filter(m=>m.id!==currentMediaId);
     currentMediaId=null; currentEventId=null;
   }catch(err){closeDelModal();showErr('mg-error',err.message);}
