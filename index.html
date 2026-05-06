@@ -1692,6 +1692,8 @@ function showPage(name, el) {
 //  FILE SELECTION
 // ══════════════════════════════════
 let selectedFile=null;
+let moderationPromise=null; // starts when file is selected, resolved by upload time
+
 const dz=document.getElementById('dropzone');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
 dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
@@ -1703,12 +1705,22 @@ function setFile(f){
   document.getElementById('file-name-display').textContent=f.name+' ('+formatSize(f.size)+')';
   document.getElementById('file-preview').style.display='flex';
   document.getElementById('dropzone').style.display='none';
+  moderationPromise=null;
+  // Start moderation immediately in background for images
+  const isVid=f.type.startsWith('video/');
+  if(!isVid){
+    showModerationStatus('checking','Checking content safety…');
+    // We don't have blobUrl yet — store a flag, run after upload
+    moderationPromise='pending';
+  }
 }
 function clearFile(){
   selectedFile=null;
+  moderationPromise=null;
   document.getElementById('file-input').value='';
   document.getElementById('file-preview').style.display='none';
   document.getElementById('dropzone').style.display='block';
+  hideModerationStatus();
 }
 function formatSize(bytes){
   if(bytes>=1024*1024) return (bytes/1024/1024).toFixed(1)+' MB';
@@ -1781,12 +1793,34 @@ async function handleUpload(){
     });
 
     setProgress('Saving metadata…', 92);
+
+    // Run AI moderation + vision for images
+    let aiTags=[], aiCaption='', aiAnalysed=false;
+    if(!isVideo){
+      showModerationStatus('checking','Azure AI checking content & analysing image…');
+      const [modResult, visionResult] = await Promise.all([
+        runAIModeration(blobUrl, eventId),
+        runAIVision(blobUrl, eventId)
+      ]);
+      if(!modResult.safe){
+        showModerationStatus('unsafe','⚠ Content flagged: '+modResult.flagged.join(', ')+'. Upload rejected.');
+        setProgress(null,null);
+        setLoading('up-btn',false);
+        return;
+      }
+      showModerationStatus('safe','✓ Content safe · AI tags generated');
+      aiTags=visionResult.tags||[];
+      aiCaption=visionResult.caption||'';
+      aiAnalysed=visionResult.aiAnalysed||false;
+      setTimeout(()=>hideModerationStatus(),2000);
+    }
+
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
         uploaderName:uploader||currentUser.name,uploaderEmail:currentUser.email||'',
         fileName:selectedFile.name,blobUrl,mediaType:isVideo?'video':'image',
         uploadDate:new Date().toISOString(),ttl:31536000,
-        aiTags:[],aiCaption:'',aiAnalysed:false})});
+        aiTags,aiCaption,aiAnalysed})});
     if(!metaRes.ok) throw new Error('Save failed ('+metaRes.status+')');
     setProgress('Done!', 100);
     setTimeout(()=>setProgress(null,null),800);
@@ -1798,18 +1832,6 @@ async function handleUpload(){
       `<div class="success-modal-info-row"><span>Type</span><span>${isVideo?'Video':'Image'}</span></div>`;
     document.getElementById('upload-success-modal').classList.add('open');
     sasCache.clear();
-    // Run AI in background — doesn't block upload experience
-    if(!isVideo){
-      hideModerationStatus();
-      Promise.all([
-        runAIModeration(blobUrl,eventId),
-        runAIVision(blobUrl,eventId)
-      ]).then(([modResult,visionResult])=>{
-        if(modResult.safe===false){
-          toast('⚠ Content flagged: '+modResult.flagged.join(', '),'error',6000);
-        }
-      }).catch(()=>{});
-    }
   }catch(err){showErr('up-error',err.message);setProgress(null,null);toast(err.message,'error');}
   setLoading('up-btn',false);
 }
