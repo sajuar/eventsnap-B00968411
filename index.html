@@ -443,7 +443,7 @@ textarea{resize:vertical;min-height:80px;}
   color:var(--purple-light);margin-bottom:0.75rem;}
 .manage-hero h1{font-family:var(--font-head);font-size:clamp(2.5rem,5vw,4rem);letter-spacing:2px;color:var(--text);}
 .manage-hero h1 span{color:var(--purple-light);}
-.manage-body{padding:2.5rem;max-width:860px;}
+.manage-body{padding:2.5rem;max-width:860px;margin:0 auto;}
 .manage-search-bar{display:flex;gap:10px;margin-bottom:2rem;flex-wrap:wrap;}
 .manage-search-bar input{flex:1;min-width:160px;}
 .manage-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
@@ -452,6 +452,16 @@ textarea{resize:vertical;min-height:80px;}
 .manage-panel-head svg{width:18px;height:18px;stroke:var(--purple-light);fill:none;stroke-width:2;}
 .manage-panel-body{padding:1.75rem;}
 .manage-actions{display:flex;gap:10px;margin-top:0.5rem;flex-wrap:wrap;}
+/* AI tags editor in manage */
+.ai-tags-editor{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xs);min-height:42px;}
+.ai-tag-removable{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;
+  font-size:0.72rem;font-weight:600;background:rgba(124,58,237,0.1);color:var(--purple-light);
+  border:1px solid rgba(124,58,237,0.2);}
+.ai-tag-removable button{background:none;border:none;cursor:pointer;color:var(--purple-light);
+  font-size:0.75rem;padding:0;line-height:1;opacity:0.7;}
+.ai-tag-removable button:hover{opacity:1;}
+.ai-tags-empty{font-size:0.8rem;color:var(--text-dim);align-self:center;}
 
 /* ══════════════════════════════════
    JOIN EVENT PAGE
@@ -473,7 +483,7 @@ textarea{resize:vertical;min-height:80px;}
   font-size:1rem;color:var(--text);outline:none;}
 .join-search-box input::placeholder{color:var(--text-dim);}
 .join-search-box .btn{border-radius:0 var(--radius) var(--radius) 0;padding:16px 24px;}
-.join-body{padding:0 2.5rem 3rem;max-width:800px;margin:0 auto;}
+.join-body{padding:0 2.5rem 3rem;max-width:1200px;margin:0 auto;}
 .event-result-card{background:var(--surface);border:1px solid rgba(37,99,235,0.2);border-radius:var(--radius);
   padding:1.5rem;margin:2rem 0 1.5rem;display:flex;align-items:center;gap:16px;}
 .event-result-icon{width:56px;height:56px;border-radius:14px;background:rgba(37,99,235,0.12);
@@ -1155,6 +1165,10 @@ textarea{resize:vertical;min-height:80px;}
         </div>
         <div class="form-group"><label>Description</label><textarea id="mg-desc"></textarea></div>
         <div class="form-group"><label>Uploader Name</label><input type="text" id="mg-uploader"/></div>
+        <div class="form-group" id="mg-ai-tags-group" style="display:none">
+          <label>AI Tags <span style="font-size:0.7rem;color:var(--text-dim);text-transform:none;letter-spacing:0">(click × to remove)</span></label>
+          <div class="ai-tags-editor" id="mg-ai-tags-editor"></div>
+        </div>
         <div class="alert alert-success" id="mg-success"></div>
         <div class="alert alert-error" id="mg-error"></div>
         <div class="manage-actions">
@@ -2154,9 +2168,40 @@ function populateForm(m){
   document.getElementById('mg-title').value=m.title||'';
   document.getElementById('mg-desc').value=m.description||'';
   document.getElementById('mg-uploader').value=m.uploaderName||'';
+  // AI tags editor
+  const tagsGroup=document.getElementById('mg-ai-tags-group');
+  const tagsEditor=document.getElementById('mg-ai-tags-editor');
+  if(Array.isArray(m.aiTags)&&m.aiTags.length>0){
+    tagsGroup.style.display='block';
+    renderMgAiTags(m.aiTags);
+  } else {
+    tagsGroup.style.display='none';
+    tagsEditor.innerHTML='';
+  }
   document.getElementById('mg-result-card').style.display='block';
   document.getElementById('del-label').textContent='"'+(m.title||m.id)+'"';
   hideAlert('mg-success'); hideAlert('mg-error');
+}
+
+function renderMgAiTags(tags){
+  const editor=document.getElementById('mg-ai-tags-editor');
+  if(!tags.length){editor.innerHTML='<span class="ai-tags-empty">No AI tags</span>';return;}
+  editor.innerHTML=tags.map((t,i)=>
+    `<span class="ai-tag-removable">${esc(t)}<button onclick="removeMgAiTag(${i})" title="Remove">×</button></span>`
+  ).join('');
+  editor.dataset.tags=JSON.stringify(tags);
+}
+
+function removeMgAiTag(index){
+  const editor=document.getElementById('mg-ai-tags-editor');
+  let tags=JSON.parse(editor.dataset.tags||'[]');
+  tags.splice(index,1);
+  renderMgAiTags(tags);
+}
+
+function getMgAiTags(){
+  const editor=document.getElementById('mg-ai-tags-editor');
+  return JSON.parse(editor.dataset.tags||'[]');
 }
 
 async function handleUpdate(){
@@ -2164,8 +2209,8 @@ async function handleUpdate(){
   hideAlert('mg-success'); hideAlert('mg-error');
   setLoading('mg-save-btn',true);
   try{
-    // Find the original item to preserve fields that should never be overwritten
     const original=allMedia.find(m=>m.id===currentMediaId)||{};
+    const editedTags=getMgAiTags();
     const url=CONFIG.UPDATE_ENDPOINT.replace('%7Bid%7D',currentMediaId).replace('{id}',currentMediaId);
     const res=await fetch(url,{method:'PUT',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
@@ -2175,17 +2220,18 @@ async function handleUpdate(){
         title:v('mg-title'),
         description:v('mg-desc'),
         uploaderName:v('mg-uploader'),
-        // Preserve these fields — never overwrite with empty
         fileName:original.fileName||'',
         blobUrl:original.blobUrl||'',
         mediaType:original.mediaType||'image',
         uploaderEmail:original.uploaderEmail||'',
         uploadDate:original.uploadDate||new Date().toISOString(),
-        ttl:original.ttl||31536000
+        ttl:original.ttl||31536000,
+        aiTags:editedTags,
+        aiCaption:original.aiCaption||'',
+        aiAnalysed:original.aiAnalysed||false
       })});
     if(!res.ok) throw new Error('Save failed ('+res.status+')');
-    // Update local cache too
-    if(original) Object.assign(original,{eventName:v('mg-eventName'),title:v('mg-title'),description:v('mg-desc'),uploaderName:v('mg-uploader')});
+    if(original) Object.assign(original,{eventName:v('mg-eventName'),title:v('mg-title'),description:v('mg-desc'),uploaderName:v('mg-uploader'),aiTags:editedTags});
     showAlert('mg-success','Saved successfully!');
     toast('Changes saved successfully','success');
   }catch(err){showErr('mg-error',err.message);}
