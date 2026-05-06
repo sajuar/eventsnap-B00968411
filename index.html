@@ -1781,34 +1781,12 @@ async function handleUpload(){
     });
 
     setProgress('Saving metadata…', 92);
-
-    // Run AI moderation + vision for images
-    let aiTags=[], aiCaption='', aiAnalysed=false;
-    if(!isVideo){
-      showModerationStatus('checking','Running Azure AI content moderation…');
-      const [modResult, visionResult] = await Promise.all([
-        runAIModeration(blobUrl, eventId),
-        runAIVision(blobUrl, eventId)
-      ]);
-      if(!modResult.safe){
-        showModerationStatus('unsafe','⚠ Content flagged by Azure AI: '+modResult.flagged.join(', ')+'. Upload rejected.');
-        setProgress(null,null);
-        setLoading('up-btn',false);
-        return;
-      }
-      showModerationStatus('safe','✓ Azure AI Content Safety passed');
-      aiTags=visionResult.tags||[];
-      aiCaption=visionResult.caption||'';
-      aiAnalysed=visionResult.aiAnalysed||false;
-      setTimeout(()=>hideModerationStatus(),3000);
-    }
-
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:'media-'+Date.now(),eventId,eventName,title,description:desc,
         uploaderName:uploader||currentUser.name,uploaderEmail:currentUser.email||'',
         fileName:selectedFile.name,blobUrl,mediaType:isVideo?'video':'image',
         uploadDate:new Date().toISOString(),ttl:31536000,
-        aiTags,aiCaption,aiAnalysed})});
+        aiTags:[],aiCaption:'',aiAnalysed:false})});
     if(!metaRes.ok) throw new Error('Save failed ('+metaRes.status+')');
     setProgress('Done!', 100);
     setTimeout(()=>setProgress(null,null),800);
@@ -1820,6 +1798,18 @@ async function handleUpload(){
       `<div class="success-modal-info-row"><span>Type</span><span>${isVideo?'Video':'Image'}</span></div>`;
     document.getElementById('upload-success-modal').classList.add('open');
     sasCache.clear();
+    // Run AI in background — doesn't block upload experience
+    if(!isVideo){
+      hideModerationStatus();
+      Promise.all([
+        runAIModeration(blobUrl,eventId),
+        runAIVision(blobUrl,eventId)
+      ]).then(([modResult,visionResult])=>{
+        if(modResult.safe===false){
+          toast('⚠ Content flagged: '+modResult.flagged.join(', '),'error',6000);
+        }
+      }).catch(()=>{});
+    }
   }catch(err){showErr('up-error',err.message);setProgress(null,null);toast(err.message,'error');}
   setLoading('up-btn',false);
 }
