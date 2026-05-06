@@ -289,7 +289,7 @@ textarea{resize:vertical;min-height:80px;}
 .search-wrap input{padding-left:42px;border-radius:99px;}
 
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem;padding:0 2.5rem 3rem;}
-#join-gallery .media-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));padding:0;}
+#join-gallery .media-grid{grid-template-columns:repeat(4,1fr);padding:0;}
 .media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
   overflow:hidden;transition:all 0.25s var(--ease);}
 .media-card:hover{border-color:rgba(225,29,72,0.25);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.3);}
@@ -1692,7 +1692,7 @@ function showPage(name, el) {
 //  FILE SELECTION
 // ══════════════════════════════════
 let selectedFile=null;
-let moderationPromise=null; // starts when file is selected, resolved by upload time
+let moderationPromise=null; // resolves to {safe, flagged} before upload button is clicked
 
 const dz=document.getElementById('dropzone');
 dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
@@ -1706,20 +1706,38 @@ function setFile(f){
   document.getElementById('file-preview').style.display='flex';
   document.getElementById('dropzone').style.display='none';
   moderationPromise=null;
-  // Start moderation immediately in background for images
   const isVid=f.type.startsWith('video/');
   if(!isVid){
+    // Disable upload button and show checking status immediately
+    const btn=document.getElementById('up-btn');
+    btn.disabled=true;
     showModerationStatus('checking','Checking content safety…');
-    // We don't have blobUrl yet — store a flag, run after upload
-    moderationPromise='pending';
+    // Run moderation now using file bytes directly — no blob URL needed
+    moderationPromise=runAIModerationFile(f).then(result=>{
+      if(!result.safe){
+        showModerationStatus('unsafe','⚠ Content flagged: '+result.flagged.join(', ')+'. Cannot upload.');
+        btn.disabled=true; // keep blocked
+      } else {
+        showModerationStatus('safe','✓ Content safety passed');
+        btn.disabled=false; // enable upload
+        setTimeout(()=>hideModerationStatus(),3000);
+      }
+      return result;
+    }).catch(()=>{
+      hideModerationStatus();
+      btn.disabled=false; // fail open
+      return {safe:true,flagged:[]};
+    });
   }
 }
+
 function clearFile(){
   selectedFile=null;
   moderationPromise=null;
   document.getElementById('file-input').value='';
   document.getElementById('file-preview').style.display='none';
   document.getElementById('dropzone').style.display='block';
+  document.getElementById('up-btn').disabled=false;
   hideModerationStatus();
 }
 function formatSize(bytes){
@@ -1794,25 +1812,13 @@ async function handleUpload(){
 
     setProgress('Saving metadata…', 92);
 
-    // Run AI moderation + vision for images
+    // Run AI Vision only — moderation already completed at file-select time
     let aiTags=[], aiCaption='', aiAnalysed=false;
     if(!isVideo){
-      showModerationStatus('checking','Azure AI checking content & analysing image…');
-      const [modResult, visionResult] = await Promise.all([
-        runAIModeration(blobUrl, eventId),
-        runAIVision(blobUrl, eventId)
-      ]);
-      if(!modResult.safe){
-        showModerationStatus('unsafe','⚠ Content flagged: '+modResult.flagged.join(', ')+'. Upload rejected.');
-        setProgress(null,null);
-        setLoading('up-btn',false);
-        return;
-      }
-      showModerationStatus('safe','✓ Content safe · AI tags generated');
+      const visionResult = await runAIVision(blobUrl, eventId);
       aiTags=visionResult.tags||[];
       aiCaption=visionResult.caption||'';
       aiAnalysed=visionResult.aiAnalysed||false;
-      setTimeout(()=>hideModerationStatus(),2000);
     }
 
     const metaRes=await fetch(CONFIG.CREATE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},
@@ -2254,6 +2260,24 @@ async function runAIModeration(blobUrl,eventId){
     if(!res.ok) return{safe:true};
     return await res.json();
   }catch(e){return{safe:true};}
+}
+
+async function runAIModerationFile(file){
+  // Send file bytes directly — used before upload when we don't have a blob URL yet
+  try{
+    const base64=await new Promise((res,rej)=>{
+      const r=new FileReader();
+      r.onload=()=>res(r.result.split(',')[1]);
+      r.onerror=rej;
+      r.readAsDataURL(file);
+    });
+    const resp=await fetch(CONFIG.MODERATE_ENDPOINT,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({fileBase64:base64,fileName:file.name,eventId:'pre-check'})
+    });
+    if(!resp.ok) return{safe:true,flagged:[]};
+    return await resp.json();
+  }catch(e){return{safe:true,flagged:[]};}
 }
 async function runAIVision(blobUrl,eventId){
   const statusEl=document.getElementById('ai-vision-status');
